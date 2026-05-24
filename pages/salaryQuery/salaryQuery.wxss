@@ -1,0 +1,255 @@
+/* pages/salaryQuery/salaryQuery.wxss */
+
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 20rpx;
+}
+
+/* 薪资总览 */
+.salary-overview {
+  margin: 20rpx;
+  padding: 30rpx;
+  background: linear-gradient(135deg, #4A90E2, #357ABD);
+  color: #ffffff;
+}
+
+.overview-title {
+  font-size: 26rpx;
+  opacity: 0.9;
+  margin-bottom: 15rpx;
+}
+
+.overview-amount {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 25rpx;
+}
+
+.amount-label {
+  font-size: 24rpx;
+  opacity: 0.8;
+}
+
+.amount-value {
+  font-size: 56rpx;
+  font-weight: bold;
+}
+
+.overview-stats {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 20rpx;
+  border-top: 1rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  opacity: 0.8;
+  margin-bottom: 5rpx;
+}
+
+.stat-value {
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+/* 月份筛选 */
+.month-filter {
+  margin: 0 20rpx 20rpx;
+  padding: 20rpx;
+}
+
+.picker-value {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-label {
+  font-size: 28rpx;
+  color: #666666;
+}
+
+.filter-value {
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: bold;
+}
+
+.filter-arrow {
+  font-size: 20rpx;
+  color: #999999;
+}
+
+/* 月度统计 */
+.month-summary {
+  margin: 0 20rpx 20rpx;
+  padding: 25rpx;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-label {
+  font-size: 28rpx;
+  color: #666666;
+}
+
+.summary-value {
+  font-size: 30rpx;
+  color: #333333;
+  font-weight: bold;
+}
+
+.summary-value.income {
+  color: #52c41a;
+}
+
+.summary-value.actual {
+  color: #ff6b35;
+}
+
+.summary-status {
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+  font-size: 24rpx;
+}
+
+.status-paid {
+  background-color: #f6ffed;
+  color: #52c41a;
+}
+
+.status-pending {
+  background-color: #fffbe6;
+  color: #faad14;
+}
+
+/* 明细区域 */
+.detail-section {
+  padding: 0 20rpx;
+}
+
+.section-header {
+  margin-bottom: 15rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.detail-list {
+  padding-bottom: 20rpx;
+}
+
+.detail-card {
+  margin-bottom: 20rpx;
+  padding: 25rpx;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15rpx;
+  padding-bottom: 15rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.detail-job {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.detail-date {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.detail-content {
+  padding: 10rpx 0;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10rpx 0;
+}
+
+.row-label {
+  font-size: 26rpx;
+  color: #999999;
+}
+
+.row-value {
+  font-size: 26rpx;
+  color: #333333;
+}
+
+.row-value.highlight {
+  color: #ff6b35;
+  font-weight: bold;
+  font-size: 28rpx;
+}
+
+.row-value.remark {
+  color: #666666;
+  font-size: 24rpx;
+}
+
+.detail-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15rpx;
+  padding-top: 15rpx;
+  border-top: 1rpx solid #f5f5f5;
+}
+
+.pay-status {
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+  font-size: 22rpx;
+}
+
+.pay-date {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 80rpx 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  display: block;
+  margin-bottom: 15rpx;
+}
+
+.empty-text {
+  font-size: 26rpx;
+  color: #999999;
+}

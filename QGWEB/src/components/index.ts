@@ -1,0 +1,10 @@
+// 组件统一导出
+export { default as TabBar } from './TabBar.vue'
+export { default as PageHeader } from './PageHeader.vue'
+export { default as Card } from './Card.vue'
+export { default as Swiper } from './Swiper.vue'
+export { default as FormInput } from './FormInput.vue'
+export { default as PasswordInput } from './PasswordInput.vue'
+export { default as Toast } from './Toast.vue'
+export { default as Modal } from './Modal.vue'
+export { default as Loading } from './Loading.vue'

@@ -1,0 +1,50 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/login/login",
+    "pages/register/register",
+    "pages/profile/profile",
+    "pages/jobList/jobList",
+    "pages/jobDetail/jobDetail",
+    "pages/applyJob/applyJob",
+    "pages/myApplications/myApplications",
+    "pages/salaryQuery/salaryQuery",
+    "pages/admin/admin",
+    "pages/admin/jobManage/jobManage",
+    "pages/admin/applicationReview/applicationReview"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#4A90E2",
+    "navigationBarTitleText": "勤工助学岗位匹配系统",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#4A90E2",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home-active.png"
+      },
+      {
+        "pagePath": "pages/jobList/jobList",
+        "text": "岗位",
+        "iconPath": "images/job.png",
+        "selectedIconPath": "images/job-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "images/profile.png",
+        "selectedIconPath": "images/profile-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,113 @@
+<!--pages/profile/profile.wxml-->
+<view class="container">
+  <!-- 用户信息卡片 -->
+  <view class="user-card card">
+    <view class="user-header">
+      <image class="user-avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+      <view class="user-info">
+        <text class="user-name">{{userInfo.name || '未登录'}}</text>
+        <text class="user-detail">{{userInfo.studentId || userInfo.account || ''}}</text>
+        <text class="user-detail">{{userInfo.major || ''}} {{userInfo.grade || ''}}</text>
+      </view>
+    </view>
+    
+    <view class="user-stats" wx:if="{{isLogin}}">
+      <view class="stat-item">
+        <text class="stat-value">{{applyCount}}</text>
+        <text class="stat-label">申请次数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{successCount}}</text>
+        <text class="stat-label">成功上岗</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">¥{{totalSalary}}</text>
+        <text class="stat-label">累计薪资</text>
+      </view>
+    </view>
+    
+    <button class="btn-login-action" wx:if="{{!isLogin}}" bindtap="goToLogin">立即登录</button>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section" wx:if="{{isLogin}}">
+    <view class="menu-group card">
+      <view class="menu-item" bindtap="goToMyApplications">
+        <view class="menu-left">
+          <text class="menu-icon">📝</text>
+          <text class="menu-text">我的申请</text>
+        </view>
+        <text class="menu-arrow">></text>
+      </view>
+      
+      <view class="menu-item" bindtap="goToSalaryQuery">
+        <view class="menu-left">
+          <text class="menu-icon">💰</text>
+          <text class="menu-text">薪资查询</text>
+        </view>
+        <text class="menu-arrow">></text>
+      </view>
+      
+      <view class="menu-item" bindtap="goToJobList">
+        <view class="menu-left">
+          <text class="menu-icon">📋</text>
+          <text class="menu-text">岗位列表</text>
+        </view>
+        <text class="menu-arrow">></text>
+      </view>
+    </view>
+
+    <view class="menu-group card">
+      <view class="menu-item" bindtap="editProfile">
+        <view class="menu-left">
+          <text class="menu-icon">✏️</text>
+          <text class="menu-text">编辑资料</text>
+        </view>
+        <text class="menu-arrow">></text>
+      </view>
+      
+      <view class="menu-item" bindtap="changePassword">
+        <view class="menu-left">
+          <text class="menu-icon">🔒</text>
+          <text class="menu-text">修改密码</text>
+        </view>
+        <text class="menu-arrow">></text>
+      </view>
+      
+      <view class="menu-item" bindtap="contactUs">
+        <view class="menu-left">
+          <text class="menu-icon">📞</text>
+          <text class="menu-text">联系我们</text>
+        </view>
+        <text class="menu-arrow">></text>
+      </view>
+    </view>
+
+    <!-- 管理员入口 -->
+    <view class="menu-group card" wx:if="{{userRole === 'admin'}}">
+      <view class="menu-item admin-entry" bindtap="goToAdmin">
+        <view class="menu-left">
+          <text class="menu-icon">⚙️</text>
+          <text class="menu-text">管理后台</text>
+        </view>
+        <text class="menu-arrow">></text>
+      </view>
+    </view>
+
+    <view class="menu-group card">
+      <view class="menu-item" bindtap="handleLogout">
+        <view class="menu-left">
+          <text class="menu-icon">🚪</text>
+          <text class="menu-text text-danger">退出登录</text>
+        </view>
+        <text class="menu-arrow">></text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 未登录提示 -->
+  <view class="login-tip card" wx:if="{{!isLogin}}">
+    <text class="tip-text">登录后可以享受更多服务</text>
+    <text class="tip-text">查看岗位、提交申请、查询薪资</text>
+  </view>
+</view>

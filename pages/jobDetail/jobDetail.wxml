@@ -1,0 +1,133 @@
+<!--pages/jobDetail/jobDetail.wxml-->
+<view class="container">
+  <!-- 岗位基本信息 -->
+  <view class="job-header card">
+    <view class="header-top">
+      <text class="job-name">{{jobInfo.jobName}}</text>
+      <view class="match-badge" wx:if="{{jobInfo.matchScore > 0}}">
+        <text class="match-label">匹配度</text>
+        <text class="match-value">{{jobInfo.matchScore}}%</text>
+      </view>
+    </view>
+    
+    <view class="job-department">
+      <text class="dept-icon">🏢</text>
+      <text>{{jobInfo.department}}</text>
+    </view>
+    
+    <view class="job-status">
+      <text class="status-tag status-{{jobInfo.status}}">{{jobInfo.statusText}}</text>
+      <text class="publish-info">发布于 {{jobInfo.publishDate}}</text>
+    </view>
+  </view>
+
+  <!-- 岗位详细信息 -->
+  <view class="job-detail-section card">
+    <view class="section-title">
+      <text class="title-icon">📋</text>
+      <text>岗位信息</text>
+    </view>
+    
+    <view class="info-grid">
+      <view class="info-item">
+        <text class="info-label">岗位类型</text>
+        <text class="info-value">{{jobInfo.jobType}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">招聘人数</text>
+        <text class="info-value">{{jobInfo.recruitNum}}人</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">工作时间</text>
+        <text class="info-value">{{jobInfo.workTime}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">薪资标准</text>
+        <text class="info-value salary">¥{{jobInfo.salary}}/时</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 岗位要求 -->
+  <view class="job-requirement card">
+    <view class="section-title">
+      <text class="title-icon">📝</text>
+      <text>岗位要求</text>
+    </view>
+    
+    <view class="requirement-content">
+      <text class="req-text">{{jobInfo.requirement}}</text>
+    </view>
+    
+    <view class="require-tags" wx:if="{{jobInfo.requiredMajor || jobInfo.requiredGrade}}">
+      <view class="req-tag" wx:if="{{jobInfo.requiredMajor}}">
+        <text>专业: {{jobInfo.requiredMajor}}</text>
+      </view>
+      <view class="req-tag" wx:if="{{jobInfo.requiredGrade}}">
+        <text>年级: {{jobInfo.requiredGrade}}</text>
+      </view>
+      <view class="req-tag" wx:if="{{jobInfo.minGpa}}">
+        <text>最低GPA: {{jobInfo.minGpa}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 工作内容 -->
+  <view class="job-content card">
+    <view class="section-title">
+      <text class="title-icon">💼</text>
+      <text>工作内容</text>
+    </view>
+    
+    <view class="content-text">
+      <text>{{jobInfo.jobContent}}</text>
+    </view>
+  </view>
+
+  <!-- 联系方式 -->
+  <view class="contact-info card">
+    <view class="section-title">
+      <text class="title-icon">📞</text>
+      <text>联系方式</text>
+    </view>
+    
+    <view class="contact-item">
+      <text class="contact-label">联系人：</text>
+      <text class="contact-value">{{jobInfo.contactPerson}}</text>
+    </view>
+    <view class="contact-item">
+      <text class="contact-label">联系电话：</text>
+      <text class="contact-value">{{jobInfo.contactPhone}}</text>
+    </view>
+    <view class="contact-item" wx:if="{{jobInfo.contactEmail}}">
+      <text class="contact-label">邮箱：</text>
+      <text class="contact-value">{{jobInfo.contactEmail}}</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="bar-left">
+      <view class="salary-display">
+        <text class="salary-label">薪资</text>
+        <text class="salary-value">¥{{jobInfo.salary}}/时</text>
+      </view>
+    </view>
+    <view class="bar-right">
+      <button 
+        class="btn-apply btn-primary" 
+        wx:if="{{jobInfo.status === 'recruiting'}}"
+        bindtap="handleApply"
+      >
+        立即申请
+      </button>
+      <button 
+        class="btn-applied" 
+        wx:else
+        disabled
+      >
+        {{jobInfo.statusText}}
+      </button>
+    </view>
+  </view>
+</view>

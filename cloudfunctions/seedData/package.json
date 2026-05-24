@@ -1,0 +1,10 @@
+{
+  "name": "seedData",
+  "version": "1.0.0",
+  "description": "测试数据生成云函数",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3",
+    "bcryptjs": "^2.4.3"
+  }
+}

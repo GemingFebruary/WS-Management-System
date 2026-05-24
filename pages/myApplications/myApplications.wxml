@@ -1,0 +1,68 @@
+<!--pages/myApplications/myApplications.wxml-->
+<view class="container">
+  <!-- 状态筛选 -->
+  <view class="status-tabs card">
+    <view 
+      class="tab-item {{activeStatus === 'all' ? 'active' : ''}}"
+      bindtap="changeStatus"
+      data-status="all"
+    >
+      全部
+    </view>
+    <view 
+      class="tab-item {{activeStatus === 'pending' ? 'active' : ''}}"
+      bindtap="changeStatus"
+      data-status="pending"
+    >
+      待审核
+    </view>
+    <view 
+      class="tab-item {{activeStatus === 'approved' ? 'active' : ''}}"
+      bindtap="changeStatus"
+      data-status="approved"
+    >
+      已通过
+    </view>
+    <view 
+      class="tab-item {{activeStatus === 'rejected' ? 'active' : ''}}"
+      bindtap="changeStatus"
+      data-status="rejected"
+    >
+      已驳回
+    </view>
+  </view>
+
+  <!-- 申请列表 -->
+  <view class="application-list">
+    <block wx:for="{{applicationList}}" wx:key="applyId">
+      <view class="application-card card" bindtap="viewDetail" data-id="{{item.applyId}}">
+        <view class="app-header">
+          <text class="app-job">{{item.jobName}}</text>
+          <text class="app-status status-{{item.status}}">{{item.statusText}}</text>
+        </view>
+        
+        <view class="app-dept">{{item.department}}</view>
+        
+        <view class="app-info">
+          <text class="info-text">申请时间: {{item.applyTime}}</text>
+          <text class="info-text">审核时间: {{item.reviewTime || '待审核'}}</text>
+        </view>
+        
+        <view class="app-footer" wx:if="{{item.status === 'rejected'}}">
+          <text class="reject-reason">驳回原因: {{item.rejectReason}}</text>
+        </view>
+        
+        <view class="app-actions" wx:if="{{item.status === 'approved'}}">
+          <button class="btn-view-salary" bindtap="viewSalary" data-job-id="{{item.jobId}}">查看薪资</button>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{applicationList.length === 0 && !loading}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无申请记录</text>
+      <button class="btn-go-apply btn-primary" bindtap="goToJobList">去申请岗位</button>
+    </view>
+  </view>
+</view>

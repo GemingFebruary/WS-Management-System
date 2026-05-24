@@ -1,0 +1,33 @@
+<!--pages/admin/jobManage/jobManage.wxml-->
+<view class="container">
+  <!-- 操作栏 -->
+  <view class="action-bar card">
+    <button class="btn-add btn-primary" bindtap="addJob">+ 发布新岗位</button>
+  </view>
+
+  <!-- 岗位列表 -->
+  <view class="job-list">
+    <block wx:for="{{jobList}}" wx:key="jobId">
+      <view class="job-card card">
+        <view class="job-header">
+          <text class="job-name">{{item.jobName}}</text>
+          <text class="status-tag status-{{item.status}}">{{item.statusText}}</text>
+        </view>
+        
+        <view class="job-info">
+          <text>部门: {{item.department}}</text>
+          <text>招聘: {{item.recruitNum}}人</text>
+          <text>薪资: ¥{{item.salary}}/时</text>
+        </view>
+        
+        <view class="job-actions">
+          <button class="btn-action btn-edit" bindtap="editJob" data-id="{{item.jobId}}">编辑</button>
+          <button class="btn-action btn-toggle" bindtap="toggleStatus" data-id="{{item.jobId}}">
+            {{item.status === 'recruiting' ? '停止招聘' : '开启招聘'}}
+          </button>
+          <button class="btn-action btn-delete" bindtap="deleteJob" data-id="{{item.jobId}}">删除</button>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

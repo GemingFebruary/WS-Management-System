@@ -1,0 +1,67 @@
+<!--pages/login/login.wxml-->
+<view class="login-container">
+  <view class="login-header">
+    <text class="app-title">勤工助学岗位匹配系统</text>
+    <text class="app-subtitle">让工作学习更轻松</text>
+  </view>
+
+  <view class="login-form card">
+    <view class="form-item">
+      <view class="form-label">
+        <text class="label-icon">👤</text>
+        <text>账号</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入学号/工号" 
+        value="{{account}}"
+        bindinput="onAccountInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">
+        <text class="label-icon">🔒</text>
+        <text>密码</text>
+      </view>
+      <input 
+        class="form-input" 
+        type="password" 
+        placeholder="请输入密码" 
+        value="{{password}}"
+        password="{{true}}"
+        bindinput="onPasswordInput"
+      />
+    </view>
+
+    <view class="form-item role-select">
+      <view class="form-label">
+        <text class="label-icon">🎯</text>
+        <text>角色</text>
+      </view>
+      <view class="role-options">
+        <view 
+          class="role-option {{userRole === 'student' ? 'active' : ''}}"
+          bindtap="selectRole"
+          data-role="student"
+        >
+          学生
+        </view>
+        <view 
+          class="role-option {{userRole === 'admin' ? 'active' : ''}}"
+          bindtap="selectRole"
+          data-role="admin"
+        >
+          管理员
+        </view>
+      </view>
+    </view>
+
+    <button class="btn-login btn-primary" bindtap="handleLogin">登录</button>
+    
+    <view class="login-footer">
+      <text class="register-link" bindtap="goToRegister">还没有账号？立即注册</text>
+    </view>
+  </view>
+</view>
