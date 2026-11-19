@@ -59,6 +59,50 @@
       {
         "type": "file",
         "value": "stop.bat"
+      },
+      {
+        "value": "FLO",
+        "type": "folder"
+      },
+      {
+        "value": "查重报告",
+        "type": "folder"
+      },
+      {
+        "value": "AIGC检测报告",
+        "type": "folder"
+      },
+      {
+        "value": "cloudfunctions",
+        "type": "folder"
+      },
+      {
+        "value": "output",
+        "type": "folder"
+      },
+      {
+        "value": ".uploads",
+        "type": "folder"
+      },
+      {
+        "value": ".codex-finalizer",
+        "type": "folder"
+      },
+      {
+        "value": ".codex-ppt-build",
+        "type": "folder"
+      },
+      {
+        "value": ".claude",
+        "type": "folder"
+      },
+      {
+        "value": ".venv",
+        "type": "folder"
+      },
+      {
+        "value": "cloud",
+        "type": "folder"
       }
     ],
     "include": []
