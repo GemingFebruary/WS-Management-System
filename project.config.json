@@ -21,6 +21,10 @@
         "type": "folder"
       },
       {
+        "value": "文档",
+        "type": "folder"
+      },
+      {
         "value": "i18n",
         "type": "folder"
       },
@@ -31,6 +35,22 @@
       {
         "type": "file",
         "value": "*.txt"
+      },
+      {
+        "type": "file",
+        "value": "*.rar"
+      },
+      {
+        "type": "file",
+        "value": "*.pdf"
+      },
+      {
+        "type": "file",
+        "value": "*.xlsx"
+      },
+      {
+        "type": "file",
+        "value": "*.zip"
       },
       {
         "type": "file",

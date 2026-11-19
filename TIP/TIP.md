@@ -137,6 +137,7 @@
 | [TIP/BACKEND.md](BACKEND.md) | 后端开发文档（QGPY） |
 | [TIP/DATABASE.md](DATABASE.md) | 数据库配置文档 |
 | [TIP/TECHNICAL.md](TECHNICAL.md) | 综合技术文档 |
+| [TIP/ROADMAP.md](ROADMAP.md) | 项目调整方向与修改路线（基于开题报告） |
 | `文档/` | 论文/设计/开题等中文文档集中存放 |
 | [README.md](../README.md) / [PROJECT_README.md](../PROJECT_README.md) | 项目入口说明 |
 | [API_DOCUMENT.md](../API_DOCUMENT.md) / [API_FULL.md](../API_FULL.md) | API 文档 |
