@@ -1,0 +1,54 @@
+# 依赖
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+
+# 虚拟环境
+.venv/
+venv/
+ENV/
+
+# 环境变量（敏感）
+.env
+.env.local
+.env.*.local
+
+# IDE
+.lingma/
+.vscode/
+.idea/
+
+# 临时文件
+.uploads/
+~$*.docx
+*.log
+
+# 工具 / AI 助手过程产物
+.codex-finalizer/
+.codex-ppt-build/
+.claude/
+output/
+
+# 参考项目（本地保留，不入库）
+FLO/
+
+# 论文检测产物（大文件，不入库）
+查重报告/
+AIGC检测报告/
+
+# 云开发辅助脚本（根目录，非小程序代码）
+cloud/
+
+# Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 非小程序目录（避免微信打包）
+miniapp/

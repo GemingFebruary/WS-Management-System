@@ -1,0 +1,59 @@
+<!--pages/admin/applicationReview/applicationReview.wxml-->
+<view class="container">
+  <!-- 筛选栏 -->
+  <view class="filter-bar card">
+    <view class="filter-tabs">
+      <view wx:for="{{filterOptions}}" wx:key="value"
+        class="filter-item {{activeFilter === item.value ? 'active' : ''}}"
+        bindtap="changeFilter" data-filter="{{item.value}}">
+        {{item.label}}
+      </view>
+    </view>
+    <view class="sort-row">
+      <text class="total-text">共 {{applicationList.length}} 条</text>
+      <view class="btn-sort" bindtap="toggleSort">
+        {{sortByTime ? '时间降序 ↑' : '时间升序 ↓'}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 申请列表 -->
+  <view class="application-list">
+    <block wx:for="{{applicationList}}" wx:key="_id">
+      <view class="application-card card">
+        <view class="app-header">
+          <view class="student-info">
+            <text class="student-name">{{item.studentName}}</text>
+            <text class="student-id">{{item.studentId}}</text>
+          </view>
+          <text class="status-tag status-{{item.status}}">{{item.statusText}}</text>
+        </view>
+        <view class="app-job">{{item.jobName}} - {{item.department}}</view>
+        <view class="app-meta">
+          <text>申请时间: {{item.applyTime}}</text>
+          <text wx:if="{{item.reviewTime}}">审核: {{item.reviewTime}}</text>
+        </view>
+        <view class="app-reason" wx:if="{{item.reason}}">
+          <text class="reason-label">申请理由:</text>
+          <text class="reason-content">{{item.reason}}</text>
+        </view>
+        <view class="app-actions">
+          <button class="btn-action btn-student" bindtap="viewStudent" data-studentid="{{item.studentId}}">查看学生</button>
+          <button class="btn-action btn-job" bindtap="viewJob" data-jobid="{{item.jobId}}">查看岗位</button>
+          <block wx:if="{{item.status === 'pending'}}">
+            <button class="btn-action btn-approve" bindtap="approveApplication" data-id="{{item._id || item.applyId}}">通过</button>
+            <button class="btn-action btn-reject" bindtap="rejectApplication" data-id="{{item._id || item.applyId}}">驳回</button>
+          </block>
+          <block wx:if="{{item.status !== 'pending'}}">
+            <text class="review-info" wx:if="{{item.reviewer}}">审核人: {{item.reviewer}}</text>
+            <text class="reject-reason" wx:if="{{item.status === 'rejected'}}">原因: {{item.rejectReason}}</text>
+          </block>
+        </view>
+      </view>
+    </block>
+    <view class="empty-state" wx:if="{{applicationList.length === 0}}">
+      <image class="empty-icon" src="/images/icon/empty-box.png" mode="aspectFit"></image>
+      <text class="empty-text">暂无申请记录</text>
+    </view>
+  </view>
+</view>

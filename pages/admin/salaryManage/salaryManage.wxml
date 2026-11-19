@@ -1,0 +1,227 @@
+<!--pages/admin/salaryManage/salaryManage.wxml-->
+<view class="container">
+  <!-- 筛选区域 -->
+  <view class="filter-card card">
+    <view class="filter-row">
+      <picker mode="selector" range="{{monthOptions}}" range-key="label" value="{{monthIndex}}" bindchange="onMonthChange">
+        <view class="picker-btn">{{monthOptions[monthIndex].label || '选择月份'}} ▼</view>
+      </picker>
+      <picker mode="selector" range="{{statusOptions}}" value="{{statusIndex}}" bindchange="onStatusChange">
+        <view class="picker-btn">{{statusOptions[statusIndex]}} ▼</view>
+      </picker>
+    </view>
+    <view class="filter-row search-row">
+      <input class="search-input" placeholder="输入学号搜索" value="{{searchKeyword}}" bindinput="onSearchInput" bindconfirm="doSearch" />
+      <button class="btn-search" bindtap="doSearch">搜索</button>
+    </view>
+    <view class="filter-actions">
+      <button class="btn-primary" bindtap="openRecordModal">+ 录入工时</button>
+      <button class="btn-success" bindtap="doPayByMonth">按月发放</button>
+      <button class="btn-warning" bindtap="doBatchPay">批量发放{{selectedIds.length > 0 ? '(' + selectedIds.length + ')' : ''}}</button>
+    </view>
+  </view>
+
+  <!-- 月度汇总 -->
+  <view class="summary-card card" wx:if="{{summary && summary.summary}}">
+    <text class="summary-title">{{currentMonth}} 薪资汇总</text>
+    <view class="summary-grid">
+      <view class="summary-item">
+        <text class="summary-value">{{summary.summary.totalStudents}}</text>
+        <text class="summary-label">学生数</text>
+      </view>
+      <view class="summary-item">
+        <text class="summary-value">{{summary.summary.totalHours}}h</text>
+        <text class="summary-label">总工时</text>
+      </view>
+      <view class="summary-item">
+        <text class="summary-value">¥{{summary.summary.totalAmount}}</text>
+        <text class="summary-label">应发总额</text>
+      </view>
+      <view class="summary-item paid">
+        <text class="summary-value">¥{{summary.summary.paidAmount}}</text>
+        <text class="summary-label">已发放</text>
+      </view>
+      <view class="summary-item unpaid">
+        <text class="summary-value">¥{{summary.summary.unpaidAmount}}</text>
+        <text class="summary-label">待发放</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 薪资记录列表 -->
+  <view class="list-card card">
+    <view class="list-header">
+      <text class="list-count">共 {{totalRecords}} 条记录</text>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <view class="spinner"></view>
+      <text>加载中...</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && salaryList.length === 0}}">
+      <image class="empty-icon" src="/images/icon/money.png" mode="aspectFit"></image>
+      <text>暂无薪资记录</text>
+    </view>
+
+    <!-- 记录列表 -->
+    <view wx:if="{{!loading && salaryList.length > 0}}">
+      <!-- 全选 -->
+      <view class="select-all-row" wx:if="{{statusIndex !== 2}}">
+        <checkbox checked="{{selectAll}}" bindtap="toggleSelectAll" />
+        <text class="select-all-text">全选</text>
+      </view>
+
+      <view class="salary-item" wx:for="{{salaryList}}" wx:key="_id">
+        <view class="item-top">
+          <checkbox wx:if="{{item.payStatus !== 'paid'}}" checked="{{selectedIds.indexOf(item._id) >= 0}}" bindtap="toggleSelect" data-id="{{item._id || item.recordId}}" />
+          <view class="item-info">
+            <text class="item-student">{{item.studentId}}</text>
+            <text class="item-job">{{item.jobName || '-'}}</text>
+          </view>
+          <view class="item-amount">
+            <text class="amount-value">¥{{item.amount}}</text>
+            <text class="status-tag {{item.payStatus === 'paid' ? 'paid' : 'unpaid'}}">{{item.payStatus === 'paid' ? '已发放' : '待发放'}}</text>
+          </view>
+        </view>
+        <view class="item-detail">
+          <text class="detail-text">{{item.workDate}} · {{item.workHours}}h · ¥{{item.hourlyRate}}/h</text>
+        </view>
+        <view class="item-actions" wx:if="{{item.payStatus !== 'paid'}}">
+          <button class="btn-link edit" bindtap="openEditModal" data-item="{{item}}">编辑</button>
+          <button class="btn-link delete" bindtap="confirmDelete" data-item="{{item}}">删除</button>
+          <button class="btn-link pay" bindtap="confirmPay" data-item="{{item}}">发放</button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 分页 -->
+    <view class="pagination" wx:if="{{totalRecords > pageSize}}">
+      <button class="page-btn" disabled="{{pageNum <= 1}}" bindtap="prevPage">上一页</button>
+      <text class="page-info">第 {{pageNum}} 页</text>
+      <button class="page-btn" disabled="{{pageNum * pageSize >= totalRecords}}" bindtap="nextPage">下一页</button>
+    </view>
+  </view>
+
+  <!-- 录入弹窗 -->
+  <view class="modal-overlay" wx:if="{{showRecordModal}}" bindtap="closeRecordModal">
+    <view class="modal-box" catchtap="stopBubble">
+      <view class="modal-header">
+        <text class="modal-title">录入工时</text>
+        <text class="modal-close" bindtap="closeRecordModal">×</text>
+      </view>
+      <scroll-view class="modal-body" scroll-y>
+        <view class="form-group">
+          <text class="form-label">学生ID *</text>
+          <input class="form-input" placeholder="如 js2380001" value="{{recordForm.studentId}}" bindinput="onRecordInput" data-field="studentId" />
+        </view>
+        <view class="form-group">
+          <text class="form-label">岗位ID *</text>
+          <input class="form-input" placeholder="如 JOB001" value="{{recordForm.jobId}}" bindinput="onRecordInput" data-field="jobId" />
+        </view>
+        <view class="form-group">
+          <text class="form-label">岗位名称</text>
+          <input class="form-input" placeholder="如 图书馆管理员" value="{{recordForm.jobName}}" bindinput="onRecordInput" data-field="jobName" />
+        </view>
+        <view class="form-group">
+          <text class="form-label">工作日期 *</text>
+          <picker mode="date" value="{{recordForm.workDate}}" bindchange="onRecordInput" data-field="workDate">
+            <view class="form-input picker-value">{{recordForm.workDate || '选择日期'}}</view>
+          </picker>
+        </view>
+        <view class="form-row">
+          <view class="form-group half">
+            <text class="form-label">工时(h)</text>
+            <input class="form-input" type="digit" value="{{recordForm.workHours}}" bindinput="onRecordInput" data-field="workHours" />
+          </view>
+          <view class="form-group half">
+            <text class="form-label">时薪(元)</text>
+            <input class="form-input" type="digit" value="{{recordForm.hourlyRate}}" bindinput="onRecordInput" data-field="hourlyRate" />
+          </view>
+        </view>
+        <view class="form-group">
+          <text class="form-label">备注</text>
+          <input class="form-input" placeholder="可选" value="{{recordForm.remark}}" bindinput="onRecordInput" data-field="remark" />
+        </view>
+      </scroll-view>
+      <view class="modal-footer">
+        <button class="btn-cancel" bindtap="closeRecordModal">取消</button>
+        <button class="btn-primary" bindtap="submitRecord">确认录入</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 编辑弹窗 -->
+  <view class="modal-overlay" wx:if="{{showEditModal}}" bindtap="closeEditModal">
+    <view class="modal-box" catchtap="stopBubble">
+      <view class="modal-header">
+        <text class="modal-title">编辑薪资记录</text>
+        <text class="modal-close" bindtap="closeEditModal">×</text>
+      </view>
+      <scroll-view class="modal-body" scroll-y>
+        <view class="form-group">
+          <text class="form-label">工作日期</text>
+          <picker mode="date" value="{{editForm.workDate}}" bindchange="onEditInput" data-field="workDate">
+            <view class="form-input picker-value">{{editForm.workDate || '选择日期'}}</view>
+          </picker>
+        </view>
+        <view class="form-row">
+          <view class="form-group half">
+            <text class="form-label">工时(h)</text>
+            <input class="form-input" type="digit" value="{{editForm.workHours}}" bindinput="onEditInput" data-field="workHours" />
+          </view>
+          <view class="form-group half">
+            <text class="form-label">时薪(元)</text>
+            <input class="form-input" type="digit" value="{{editForm.hourlyRate}}" bindinput="onEditInput" data-field="hourlyRate" />
+          </view>
+        </view>
+        <view class="form-group">
+          <text class="form-label">岗位名称</text>
+          <input class="form-input" value="{{editForm.jobName}}" bindinput="onEditInput" data-field="jobName" />
+        </view>
+        <view class="form-group">
+          <text class="form-label">备注</text>
+          <input class="form-input" value="{{editForm.remark}}" bindinput="onEditInput" data-field="remark" />
+        </view>
+      </scroll-view>
+      <view class="modal-footer">
+        <button class="btn-cancel" bindtap="closeEditModal">取消</button>
+        <button class="btn-primary" bindtap="submitEdit">保存修改</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 删除确认弹窗 -->
+  <view class="modal-overlay" wx:if="{{showDeleteModal}}" bindtap="closeDeleteModal">
+    <view class="modal-box small" catchtap="stopBubble">
+      <view class="modal-header">
+        <text class="modal-title">确认删除</text>
+      </view>
+      <view class="modal-body">
+        <text class="confirm-text">确定删除该条薪资记录？\n学生：{{deleteTarget.studentId}}\n金额：¥{{deleteTarget.amount}}\n此操作不可撤销。</text>
+      </view>
+      <view class="modal-footer">
+        <button class="btn-cancel" bindtap="closeDeleteModal">取消</button>
+        <button class="btn-danger" bindtap="doDelete">确认删除</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 发放确认弹窗 -->
+  <view class="modal-overlay" wx:if="{{showPayModal}}" bindtap="closePayModal">
+    <view class="modal-box small" catchtap="stopBubble">
+      <view class="modal-header">
+        <text class="modal-title">确认发放</text>
+      </view>
+      <view class="modal-body">
+        <text class="confirm-text">确定发放该条薪资？\n学生：{{payTarget.studentId}}\n金额：¥{{payTarget.amount}}</text>
+      </view>
+      <view class="modal-footer">
+        <button class="btn-cancel" bindtap="closePayModal">取消</button>
+        <button class="btn-success" bindtap="doPay">确认发放</button>
+      </view>
+    </view>
+  </view>
+</view>

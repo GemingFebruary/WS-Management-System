@@ -1,0 +1,42 @@
+/* pages/admin/applicationReview/applicationReview.wxss */
+.container { min-height: 100vh; background-color: #f5f5f5; padding-bottom: 20rpx; box-sizing: border-box; overflow-x: hidden; }
+
+/* 筛选栏 */
+.filter-bar { margin: 20rpx; padding: 16rpx 20rpx; box-sizing: border-box; }
+.filter-tabs { display: flex; gap: 12rpx; margin-bottom: 12rpx; flex-wrap: wrap; }
+.filter-item { padding: 10rpx 24rpx; font-size: 26rpx; color: #666; border-radius: 30rpx; background: #f5f5f5; white-space: nowrap; }
+.filter-item.active { color: #fff; background: #4A90E2; }
+.sort-row { display: flex; align-items: center; gap: 12rpx; }
+.total-text { font-size: 24rpx; color: #999; flex: 1; }
+.btn-sort { padding: 6rpx 16rpx; border: 1rpx solid #ddd; border-radius: 6rpx; font-size: 22rpx; color: #666; white-space: nowrap; }
+
+/* 申请列表 */
+.application-list { padding: 0 20rpx; box-sizing: border-box; }
+.application-card { margin-bottom: 20rpx; padding: 25rpx; box-sizing: border-box; overflow: hidden; }
+.app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10rpx; gap: 12rpx; }
+.student-info { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.student-name { font-size: 28rpx; font-weight: bold; color: #333; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.student-id { font-size: 22rpx; color: #999; }
+.status-tag { padding: 4rpx 12rpx; border-radius: 4rpx; font-size: 22rpx; white-space: nowrap; flex-shrink: 0; }
+.status-pending { background: #fffbe6; color: #faad14; }
+.status-approved { background: #f6ffed; color: #52c41a; }
+.status-rejected { background: #fff2f0; color: #ff4d4f; }
+.status-cancelled { background: #f5f5f5; color: #999; }
+.app-job { font-size: 26rpx; color: #666; margin-bottom: 10rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.app-meta { display: flex; gap: 20rpx; font-size: 22rpx; color: #999; margin-bottom: 10rpx; flex-wrap: wrap; }
+.app-reason { margin-top: 10rpx; padding: 15rpx; background: #f8f8f8; border-radius: 8rpx; }
+.reason-label { font-size: 24rpx; color: #999; display: block; margin-bottom: 5rpx; }
+.reason-content { font-size: 26rpx; color: #333; word-break: break-all; }
+.app-actions { margin-top: 15rpx; display: flex; flex-wrap: wrap; gap: 12rpx; align-items: center; }
+.btn-action { height: 60rpx; line-height: 60rpx; font-size: 24rpx; border-radius: 6rpx; padding: 0 20rpx; white-space: nowrap; }
+.btn-student { background: #e6f7ff; color: #1890ff; }
+.btn-job { background: #fff7e6; color: #fa8c16; }
+.btn-approve { background: #52c41a; color: #fff; }
+.btn-reject { background: #ff4d4f; color: #fff; }
+.review-info { font-size: 22rpx; color: #999; width: 100%; }
+.reject-reason { font-size: 22rpx; color: #ff4d4f; margin-top: 6rpx; width: 100%; word-break: break-all; }
+
+/* 空状态 */
+.empty-state { text-align: center; padding: 80rpx 0; }
+.empty-icon { width: 80rpx; height: 80rpx; display: block; margin: 0 auto 15rpx; }
+.empty-text { font-size: 26rpx; color: #999; }

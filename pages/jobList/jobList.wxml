@@ -1,0 +1,105 @@
+<!--pages/jobList/jobList.wxml-->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar card">
+    <view class="search-input-wrapper">
+      <image class="search-icon" src="/images/icon/search.png" mode="aspectFit"></image>
+      <input 
+        class="search-input" 
+        type="text" 
+        placeholder="搜索岗位名称、部门" 
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        bindconfirm="handleSearch"
+      />
+      <text class="search-btn" bindtap="handleSearch">搜索</text>
+    </view>
+  </view>
+
+  <!-- 筛选条件 -->
+  <view class="filter-bar card">
+    <view class="filter-item" bindtap="showFilterPicker" data-type="jobType">
+      <text class="filter-label">类型: {{filterData.jobType || '全部'}}</text>
+      <text class="filter-arrow">▼</text>
+    </view>
+    <view class="filter-item" bindtap="showFilterPicker" data-type="department">
+      <text class="filter-label">部门: {{filterData.department || '全部'}}</text>
+      <text class="filter-arrow">▼</text>
+    </view>
+    <view class="filter-item" bindtap="showFilterPicker" data-type="status">
+      <text class="filter-label">状态: {{filterData.statusText || '全部'}}</text>
+      <text class="filter-arrow">▼</text>
+    </view>
+  </view>
+
+  <!-- 排序选项 -->
+  <view class="sort-bar card">
+    <text class="sort-text">共 {{totalJobs}} 个岗位</text>
+    <view class="sort-options">
+      <text 
+        class="sort-option {{sortBy === 'default' ? 'active' : ''}}"
+        bindtap="changeSort"
+        data-sort="default"
+      >默认</text>
+      <text 
+        class="sort-option {{sortBy === 'salary' ? 'active' : ''}}"
+        bindtap="changeSort"
+        data-sort="salary"
+      >薪资</text>
+      <text 
+        class="sort-option {{sortBy === 'match' ? 'active' : ''}}"
+        bindtap="changeSort"
+        data-sort="match"
+      >匹配度</text>
+    </view>
+  </view>
+
+  <!-- 岗位列表 -->
+  <view class="job-list-container">
+    <block wx:for="{{jobList}}" wx:key="jobId">
+      <view class="job-card card" bindtap="goToJobDetail" data-job-id="{{item.jobId}}">
+        <view class="job-header">
+          <text class="job-name">{{item.jobName}}</text>
+          <view class="match-tag" wx:if="{{item.matchScore > 0}}">
+            {{item.matchScore}}%
+          </view>
+        </view>
+        
+        <view class="job-dept">{{item.department}}</view>
+        
+        <view class="job-details">
+          <view class="detail-row">
+            <text class="detail-item"><image class="detail-item-icon" src="/images/icon/briefcase.png" mode="aspectFit"></image> {{item.jobType}}</text>
+            <text class="detail-item"><image class="detail-item-icon" src="/images/icon/user.png" mode="aspectFit"></image> 招聘{{item.recruitNum}}人</text>
+          </view>
+          <view class="detail-row">
+            <text class="detail-item"><image class="detail-item-icon" src="/images/icon/clock.png" mode="aspectFit"></image> {{item.workTime}}</text>
+          </view>
+          <view class="detail-row">
+            <text class="detail-item salary-text"><image class="detail-item-icon" src="/images/icon/money.png" mode="aspectFit"></image> ¥{{item.salary}}/时</text>
+          </view>
+        </view>
+        
+        <view class="job-footer">
+          <text class="status-tag status-{{item.status}}">{{item.statusText}}</text>
+          <text class="publish-date">{{item.publishDate}}</text>
+        </view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{jobList.length === 0 && !loading}}">
+      <image class="empty-icon" src="/images/icon/empty-box.png" mode="aspectFit"></image>
+      <text class="empty-text">暂无岗位信息</text>
+    </view>
+
+    <!-- 加载更多 -->
+    <view class="load-more" wx:if="{{hasMore}}">
+      <text class="load-text">加载中...</text>
+    </view>
+    
+    <view class="no-more" wx:if="{{!hasMore && jobList.length > 0}}">
+      <text class="no-more-text">没有更多了</text>
+    </view>
+  </view>
+</view>

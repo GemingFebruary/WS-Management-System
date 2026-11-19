@@ -1,0 +1,70 @@
+// SCSS Mixins — 移植自 FLO 项目
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// 单行/多行文本省略
+// 用法: @include text-ellipsis; 或 @include text-ellipsis(3);
+@mixin text-ellipsis($lines: 1) {
+  @if $lines == 1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } @else {
+    display: -webkit-box;
+    -webkit-line-clamp: $lines;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// 安全区域底部适配
+@mixin safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+// 0.5px 伪元素分隔线（高清屏）
+@mixin hairline-bottom {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 1px;
+    background-color: var(--border);
+    transform: scaleY(0.5);
+  }
+}
+
+// 毛玻璃效果
+@mixin glass-effect($bg: rgba(255, 255, 255, 0.85)) {
+  background: $bg;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+// 手指按压反馈
+@mixin tap-active {
+  &:active {
+    transform: scale(0.97);
+    opacity: 0.85;
+  }
+}

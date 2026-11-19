@@ -1,0 +1,148 @@
+<!--pages/applyJob/applyJob.wxml-->
+<view class="container">
+  <!-- 岗位信息摘要 -->
+  <view class="job-summary card">
+    <view class="summary-title">申请岗位</view>
+    <view class="summary-content">
+      <text class="job-name">{{jobInfo.jobName}}</text>
+      <text class="job-dept">{{jobInfo.department}}</text>
+      <text class="job-salary">薪资: ¥{{jobInfo.salary}}/时</text>
+    </view>
+  </view>
+
+  <!-- 申请表单 -->
+  <view class="apply-form card">
+    <view class="form-title">申请信息</view>
+
+    <view class="form-item">
+      <view class="form-label">姓名 <text class="required">*</text></view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入姓名"
+        value="{{applyForm.name}}"
+        disabled
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">学号 <text class="required">*</text></view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入学号"
+        value="{{applyForm.studentId}}"
+        disabled
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">学院 <text class="required">*</text></view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入学院"
+        value="{{applyForm.college}}"
+        disabled
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">专业 <text class="required">*</text></view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入专业"
+        value="{{applyForm.major}}"
+        disabled
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">年级 <text class="required">*</text></view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入年级"
+        value="{{applyForm.grade}}"
+        disabled
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">手机号 <text class="required">*</text></view>
+      <input 
+        class="form-input" 
+        type="number" 
+        placeholder="请输入手机号"
+        maxlength="11"
+        value="{{applyForm.phone}}"
+        bindinput="onPhoneInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">邮箱</view>
+      <input 
+        class="form-input" 
+        type="text" 
+        placeholder="请输入邮箱（选填）"
+        value="{{applyForm.email}}"
+        bindinput="onEmailInput"
+      />
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">可工作时间 <text class="required">*</text></view>
+      <picker mode="multiSelector" range="{{timeRange}}" value="{{timeIndex}}" bindchange="onTimeChange">
+        <view class="picker-value">{{selectedTime || '请选择可工作时间'}}</view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">相关经验</view>
+      <textarea 
+        class="form-textarea" 
+        placeholder="请描述您的相关工作或实践经历（选填）"
+        value="{{applyForm.experience}}"
+        bindinput="onExperienceInput"
+        maxlength="300"
+      />
+      <text class="char-count">{{applyForm.experience.length}}/300</text>
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">申请理由 <text class="required">*</text></view>
+      <textarea 
+        class="form-textarea" 
+        placeholder="请说明您申请该岗位的原因和优势"
+        value="{{applyForm.reason}}"
+        bindinput="onReasonInput"
+        maxlength="500"
+      />
+      <text class="char-count">{{applyForm.reason.length}}/500</text>
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">附件上传</view>
+      <view class="upload-area" bindtap="uploadFile">
+        <image class="upload-icon" src="/images/icon/paperclip.png" mode="aspectFit"></image>
+        <text class="upload-text">点击上传简历或证明材料</text>
+      </view>
+      <view class="file-list" wx:if="{{fileList.length > 0}}">
+        <block wx:for="{{fileList}}" wx:key="index">
+          <view class="file-item">
+            <text class="file-name">{{item.name}}</text>
+            <text class="file-remove" bindtap="removeFile" data-index="{{index}}">×</text>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <button class="btn-submit btn-primary" bindtap="handleSubmit">提交申请</button>
+    <text class="submit-tip">提交后可在"我的申请"中查看进度</text>
+  </view>
+</view>

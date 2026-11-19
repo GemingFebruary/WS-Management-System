@@ -1,0 +1,170 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 轮播图 -->
+  <swiper class="banner-swiper" indicator-dots="{{true}}" autoplay="{{true}}" interval="{{3000}}" duration="{{500}}" circular="{{true}}">
+    <block wx:for="{{bannerList}}" wx:key="id">
+      <swiper-item>
+        <image src="{{item.imageUrl}}" mode="aspectFill" class="banner-image" lazy-load></image>
+        <view class="banner-title">{{item.title}}</view>
+      </swiper-item>
+    </block>
+  </swiper>
+
+  <!-- 快捷功能入口 -->
+  <view class="quick-entry card">
+    <view class="entry-list">
+      <view class="entry-item" bindtap="goToJobList">
+        <image class="entry-icon" src="/images/icon/document.png" mode="aspectFit"></image>
+        <view class="entry-text">岗位查询</view>
+      </view>
+      <view class="entry-item" bindtap="goToMyApplications">
+        <image class="entry-icon" src="/images/icon/edit-pen.png" mode="aspectFit"></image>
+        <view class="entry-text">我的申请</view>
+      </view>
+      <view class="entry-item" bindtap="goToSalaryQuery">
+        <image class="entry-icon" src="/images/icon/money.png" mode="aspectFit"></image>
+        <view class="entry-text">薪资查询</view>
+      </view>
+      <view class="entry-item" bindtap="goToProfile">
+        <image class="entry-icon" src="/images/icon/user.png" mode="aspectFit"></image>
+        <view class="entry-text">个人中心</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最新公告（在推荐岗位上方） -->
+  <view class="notice-section card">
+    <view class="notice-header">
+      <text class="notice-title">最新公告</text>
+      <text class="notice-more" bindtap="goToNotices">查看更多 ></text>
+    </view>
+
+    <!-- 加载中 -->
+    <view wx:if="{{noticeLoading}}" class="section-loading">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载公告中...</text>
+    </view>
+
+    <!-- 加载失败 -->
+    <view wx:elif="{{noticeError}}" class="section-error">
+      <image class="error-icon" src="/images/icon/empty-box.png" mode="aspectFit"></image>
+      <text class="error-text">暂无公告</text>
+      <text class="retry-btn" bindtap="loadNotices">重新加载</text>
+    </view>
+
+    <!-- 公告列表 -->
+    <view wx:else class="notice-list">
+      <block wx:for="{{noticeList}}" wx:key="noticeId">
+        <view class="notice-item" bindtap="openNotice" data-notice-id="{{item.noticeId}}">
+          <text class="notice-dot">•</text>
+          <text class="notice-content">{{item.title}}</text>
+          <text class="notice-date">{{item.date}}</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 推荐岗位 -->
+  <view class="recommend-section card">
+    <view class="recommend-header">
+      <text class="recommend-title">推荐岗位</text>
+      <text class="recommend-more" bindtap="goToJobList">查看更多 ></text>
+    </view>
+
+    <!-- 加载中 -->
+    <view wx:if="{{recommendLoading}}" class="section-loading">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载岗位中...</text>
+    </view>
+
+    <!-- 加载失败 -->
+    <view wx:elif="{{recommendError}}" class="section-error">
+      <image class="error-icon" src="/images/icon/empty-box.png" mode="aspectFit"></image>
+      <text class="error-text">加载岗位失败</text>
+      <text class="retry-btn" bindtap="loadRecommendJobs">重新加载</text>
+    </view>
+
+    <!-- 岗位列表 -->
+    <view wx:else class="job-list">
+      <block wx:for="{{recommendJobs}}" wx:key="jobId">
+        <view class="job-card card" bindtap="goToJobDetail" data-job-id="{{item.jobId}}">
+          <view class="job-header">
+            <text class="job-name">{{item.jobName}}</text>
+            <view class="match-tag" wx:if="{{item.matchScore > 0}}">
+              匹配度 {{item.matchScore}}%
+            </view>
+          </view>
+          <view class="job-info">
+            <text class="info-item"><image class="info-item-icon" src="/images/icon/location.png" mode="aspectFit"></image> {{item.department}}</text>
+            <text class="info-item"><image class="info-item-icon" src="/images/icon/briefcase.png" mode="aspectFit"></image> {{item.jobType}}</text>
+          </view>
+          <view class="job-info">
+            <text class="info-item"><image class="info-item-icon" src="/images/icon/clock.png" mode="aspectFit"></image> {{item.workTime}}</text>
+            <text class="info-item salary"><image class="info-item-icon" src="/images/icon/money.png" mode="aspectFit"></image> ¥{{item.salary}}/时</text>
+          </view>
+          <view class="job-footer">
+            <text class="recruit-num">招聘 {{item.recruitNum}} 人</text>
+            <text class="status-tag status-{{item.status}}">{{item.statusText}}</text>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 开发工具：初始化数据库（仅开发阶段显示） -->
+  <view class="dev-tools card" style="margin-top: 20rpx; background: #fff3cd;">
+    <view class="section-header">
+      <text class="section-title" style="color: #856404;"> 开发工具</text>
+    </view>
+    <view style="padding: 20rpx;">
+      <button
+        class="init-btn"
+        bindtap="oneClickInit"
+        disabled="{{initProcessing}}"
+        style="background: #28a745; color: #fff; border: none; padding: 20rpx 40rpx; border-radius: 8rpx; margin-bottom: 16rpx;"
+      >
+        {{initProcessing ? initStepText : '  一键初始化（数据库 + 测试数据）'}}
+      </button>
+      <view style="display: flex; gap: 16rpx;">
+        <button
+          bindtap="initDatabase"
+          disabled="{{initProcessing}}"
+          style="flex: 1; background: #ffc107; color: #000; border: none; padding: 16rpx; border-radius: 8rpx; font-size: 26rpx;"
+        >
+          仅初始化数据库
+        </button>
+        <button
+          bindtap="generateSeedData"
+          disabled="{{initProcessing}}"
+          style="flex: 1; background: #17a2b8; color: #fff; border: none; padding: 16rpx; border-radius: 8rpx; font-size: 26rpx;"
+        >
+          仅生成测试数据
+        </button>
+        <button
+          bindtap="clearSeedData"
+          disabled="{{initProcessing}}"
+          style="flex: 1; background: #dc3545; color: #fff; border: none; padding: 16rpx; border-radius: 8rpx; font-size: 26rpx;"
+        >
+          清空测试数据
+        </button>
+      </view>
+      <text style="display: block; margin-top: 16rpx; font-size: 24rpx; color: #856404; line-height: 1.6;">
+        一键初始化：创建集合+索引+管理员 → 生成20学生+15岗位+30申请+40薪资
+      </text>
+    </view>
+  </view>
+
+  <!-- 公告详情弹窗 -->
+  <view wx:if="{{showNoticeDetail}}" class="modal-overlay" bindtap="closeNotice">
+    <view class="modal-box" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">{{selectedNotice.title}}</text>
+        <text class="modal-close" bindtap="closeNotice">✕</text>
+      </view>
+      <scroll-view class="modal-body" scroll-y>
+        <text class="notice-detail-content">{{selectedNotice.content}}</text>
+        <view class="notice-detail-meta">{{selectedNotice.date}}</view>
+      </scroll-view>
+    </view>
+  </view>
+</view>

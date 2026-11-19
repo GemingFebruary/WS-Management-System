@@ -1,0 +1,104 @@
+<!--pages/salaryQuery/salaryQuery.wxml-->
+<view class="container">
+  <!-- 薪资总览 -->
+  <view class="salary-overview card">
+    <view class="overview-title">薪资总览</view>
+    <view class="overview-amount">
+      <text class="amount-label">累计薪资</text>
+      <text class="amount-value">¥{{totalSalary}}</text>
+    </view>
+    <view class="overview-stats">
+      <view class="stat-item">
+        <text class="stat-label">本月薪资</text>
+        <text class="stat-value">¥{{monthSalary}}</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">工作时长</text>
+        <text class="stat-value">{{totalHours}}小时</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-label">在岗岗位</text>
+        <text class="stat-value">{{currentJobCount}}个</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 月份筛选 -->
+  <view class="month-filter card">
+    <picker mode="selector" range="{{monthOptions}}" range-key="label" value="{{monthIndex}}" bindchange="onMonthChange">
+      <view class="picker-value">
+        <text class="filter-label"><image class="filter-label-icon" src="/images/icon/calendar.png" mode="aspectFit"></image> 选择月份</text>
+        <text class="filter-value">{{monthOptions[monthIndex].label}}</text>
+        <text class="filter-arrow">▼</text>
+      </view>
+    </picker>
+  </view>
+
+  <!-- 月度统计 -->
+  <view class="month-summary card">
+    <view class="summary-row">
+      <text class="summary-label">本月应发</text>
+      <text class="summary-value income">¥{{monthData.shouldPay}}</text>
+    </view>
+    <view class="summary-row">
+      <text class="summary-label">实发工资</text>
+      <text class="summary-value actual">¥{{monthData.actualPay}}</text>
+    </view>
+    <view class="summary-row">
+      <text class="summary-label">工作时长</text>
+      <text class="summary-value">{{monthData.workHours}}小时</text>
+    </view>
+    <view class="summary-row">
+      <text class="summary-label">发放状态</text>
+      <text class="summary-status status-{{monthData.payStatus}}">{{monthData.payStatusText}}</text>
+    </view>
+  </view>
+
+  <!-- 薪资明细列表 -->
+  <view class="detail-section">
+    <view class="section-header">
+      <text class="section-title">薪资明细</text>
+    </view>
+
+    <view class="detail-list">
+      <block wx:for="{{salaryDetailList}}" wx:key="recordId">
+        <view class="detail-card card">
+          <view class="detail-header">
+            <text class="detail-job">{{item.jobName}}</text>
+            <text class="detail-date">{{item.workDate}}</text>
+          </view>
+          
+          <view class="detail-content">
+            <view class="detail-row">
+              <text class="row-label">工作时长</text>
+              <text class="row-value">{{item.workHours}}小时</text>
+            </view>
+            <view class="detail-row">
+              <text class="row-label">时薪标准</text>
+              <text class="row-value">¥{{item.hourlyRate}}/时</text>
+            </view>
+            <view class="detail-row">
+              <text class="row-label">本次薪资</text>
+              <text class="row-value highlight">¥{{item.amount}}</text>
+            </view>
+            <view class="detail-row" wx:if="{{item.remark}}">
+              <text class="row-label">备注</text>
+              <text class="row-value remark">{{item.remark}}</text>
+            </view>
+          </view>
+          
+          <view class="detail-footer">
+            <text class="pay-status status-{{item.payStatus}}">{{item.payStatusText}}</text>
+            <text class="pay-date">发放: {{item.payDate || '待发放'}}</text>
+          </view>
+        </view>
+      </block>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{salaryDetailList.length === 0}}">
+        <image class="empty-icon" src="/images/icon/money.png" mode="aspectFit"></image>
+        <text class="empty-text">暂无薪资记录</text>
+      </view>
+    </view>
+  </view>
+</view>

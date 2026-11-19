@@ -1,0 +1,121 @@
+<!--pages/admin/studentManage/studentManage.wxml-->
+<view class="container">
+  <!-- 搜索栏 -->
+  <view class="search-bar card">
+    <view class="search-row">
+      <input class="search-input" placeholder="搜索姓名/学号/学院" value="{{searchKeyword}}" bindinput="onSearchInput" bindconfirm="doSearch" />
+      <button class="btn-search" bindtap="doSearch">搜索</button>
+    </view>
+    <text class="total-text">共 {{studentList.length}} 名学生</text>
+  </view>
+
+  <!-- 学生列表 -->
+  <view class="student-list">
+    <block wx:for="{{studentList}}" wx:key="userId">
+      <view class="student-card card">
+        <view class="s-header">
+          <view class="s-info">
+            <text class="s-name">{{item.name}}</text>
+            <text class="s-status {{item.status}}">{{item.status === 'active' ? '正常' : '已禁用'}}</text>
+          </view>
+          <text class="s-id">{{item.studentId}}</text>
+        </view>
+        <view class="s-meta">
+          <text>{{item.college}} · {{item.major}}</text>
+          <text>{{item.grade}} {{item.gpa ? '· GPA ' + item.gpa : ''}}</text>
+        </view>
+        <view class="s-contact" wx:if="{{item.phone || item.email}}">
+          <text wx:if="{{item.phone}}">{{item.phone}}</text>
+          <text wx:if="{{item.email}}">{{item.email}}</text>
+        </view>
+        <view class="s-actions">
+          <button class="btn-action btn-edit" bindtap="openEdit" data-id="{{item.userId}}">编辑</button>
+          <button class="btn-action btn-reset" bindtap="resetPassword" data-id="{{item.userId}}">重置密码</button>
+          <button class="btn-action {{item.status === 'active' ? 'btn-disable' : 'btn-enable'}}" bindtap="toggleStatus" data-id="{{item.userId}}">
+            {{item.status === 'active' ? '禁用' : '启用'}}
+          </button>
+        </view>
+      </view>
+    </block>
+    <view class="empty-state" wx:if="{{studentList.length === 0 && !loading}}">
+      <image class="empty-icon" src="/images/icon/empty-box.png" mode="aspectFit"></image>
+      <text class="empty-text">暂无学生数据</text>
+    </view>
+  </view>
+
+  <!-- 编辑弹窗 -->
+  <view class="modal-mask" wx:if="{{showEditModal}}" bindtap="closeEditModal">
+    <view class="modal-box" catchtap="">
+      <view class="modal-header">
+        <text class="modal-title">编辑学生信息</text>
+        <text class="modal-close" bindtap="closeEditModal">✕</text>
+      </view>
+      <scroll-view class="modal-body" scroll-y>
+        <view class="form-row">
+          <view class="form-group half">
+            <text class="form-label">姓名</text>
+            <input class="form-input" value="{{editForm.name}}" data-field="name" bindinput="onEditField" />
+          </view>
+          <view class="form-group half">
+            <text class="form-label">性别</text>
+            <picker data-field="gender" bindchange="onEditField" value="0" range="{{['男','女']}}">
+              <view class="form-input">{{editForm.gender || '选择'}} ▾</view>
+            </picker>
+          </view>
+        </view>
+        <view class="form-row">
+          <view class="form-group half">
+            <text class="form-label">学院</text>
+            <input class="form-input" value="{{editForm.college}}" data-field="college" bindinput="onEditField" />
+          </view>
+          <view class="form-group half">
+            <text class="form-label">专业</text>
+            <input class="form-input" value="{{editForm.major}}" data-field="major" bindinput="onEditField" />
+          </view>
+        </view>
+        <view class="form-row">
+          <view class="form-group half">
+            <text class="form-label">年级</text>
+            <input class="form-input" value="{{editForm.grade}}" data-field="grade" bindinput="onEditField" />
+          </view>
+          <view class="form-group half">
+            <text class="form-label">GPA</text>
+            <input class="form-input" type="digit" value="{{editForm.gpa}}" data-field="gpa" bindinput="onEditNumberField" />
+          </view>
+        </view>
+        <view class="form-row">
+          <view class="form-group half">
+            <text class="form-label">电话</text>
+            <input class="form-input" value="{{editForm.phone}}" data-field="phone" bindinput="onEditField" />
+          </view>
+          <view class="form-group half">
+            <text class="form-label">邮箱</text>
+            <input class="form-input" value="{{editForm.email}}" data-field="email" bindinput="onEditField" />
+          </view>
+        </view>
+        <view class="form-row">
+          <view class="form-group half">
+            <text class="form-label">家庭类型</text>
+            <picker data-field="familyType" bindchange="onEditField" value="0" range="{{['一般','困难','特别困难']}}">
+              <view class="form-input">{{editForm.familyType || '选择'}} ▾</view>
+            </picker>
+          </view>
+          <view class="form-group half">
+            <text class="form-label">状态</text>
+            <picker data-field="status" bindchange="onEditField" value="0" range="{{['active','disabled']}}" range-key="{{'__none__'}}">
+              <view class="form-input">{{editForm.status === 'active' ? '正常' : '禁用'}} ▾</view>
+            </picker>
+          </view>
+        </view>
+        <view class="form-group">
+          <text class="form-label">家庭状况</text>
+          <textarea class="form-textarea" value="{{editForm.familyDesc}}" data-field="familyDesc" bindinput="onEditField" placeholder="描述家庭经济状况" />
+        </view>
+      </scroll-view>
+      <view class="modal-footer">
+        <button class="btn-cancel" bindtap="closeEditModal">取消</button>
+        <button class="btn-confirm" bindtap="saveEdit">保存</button>
+      </view>
+    </view>
+  </view>
+</view>

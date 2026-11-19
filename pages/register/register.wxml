@@ -1,0 +1,158 @@
+<!--pages/register/register.wxml-->
+<view class="register-container">
+  <view class="register-header">
+    <text class="page-title">用户注册</text>
+    <text class="page-subtitle">请填写您的个人信息</text>
+  </view>
+
+  <view class="register-form card">
+    <!-- 基本信息 -->
+    <view class="form-section">
+      <view class="section-title">基本信息</view>
+      
+      <view class="form-item">
+        <view class="form-label">学号 <text class="required">*</text></view>
+        <input 
+          class="form-input" 
+          type="text" 
+          placeholder="请输入学号" 
+          value="{{studentInfo.studentId}}"
+          bindinput="onStudentIdInput"
+        />
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">姓名 <text class="required">*</text></view>
+        <input 
+          class="form-input" 
+          type="text" 
+          placeholder="请输入姓名" 
+          value="{{studentInfo.name}}"
+          bindinput="onNameInput"
+        />
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">性别</view>
+        <picker mode="selector" range="{{genderList}}" value="{{genderIndex}}" bindchange="onGenderChange">
+          <view class="picker-value">{{genderList[genderIndex]}}</view>
+        </picker>
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">学院 <text class="required">*</text></view>
+        <input 
+          class="form-input" 
+          type="text" 
+          placeholder="请输入所在学院" 
+          value="{{studentInfo.college}}"
+          bindinput="onCollegeInput"
+        />
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">专业 <text class="required">*</text></view>
+        <input 
+          class="form-input" 
+          type="text" 
+          placeholder="请输入专业" 
+          value="{{studentInfo.major}}"
+          bindinput="onMajorInput"
+        />
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">年级 <text class="required">*</text></view>
+        <picker mode="selector" range="{{gradeList}}" value="{{gradeIndex}}" bindchange="onGradeChange">
+          <view class="picker-value">{{gradeList[gradeIndex]}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 联系信息 -->
+    <view class="form-section">
+      <view class="section-title">联系信息</view>
+      
+      <view class="form-item">
+        <view class="form-label">手机号 <text class="required">*</text></view>
+        <input 
+          class="form-input" 
+          type="number" 
+          placeholder="请输入手机号" 
+          maxlength="11"
+          value="{{studentInfo.phone}}"
+          bindinput="onPhoneInput"
+        />
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">邮箱</view>
+        <input 
+          class="form-input" 
+          type="text" 
+          placeholder="请输入邮箱（选填）" 
+          value="{{studentInfo.email}}"
+          bindinput="onEmailInput"
+        />
+      </view>
+    </view>
+
+    <!-- 家庭情况 -->
+    <view class="form-section">
+      <view class="section-title">家庭情况</view>
+      
+      <view class="form-item">
+        <view class="form-label">家庭类型</view>
+        <picker mode="selector" range="{{familyTypeList}}" value="{{familyTypeIndex}}" bindchange="onFamilyTypeChange">
+          <view class="picker-value">{{familyTypeList[familyTypeIndex]}}</view>
+        </picker>
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">家庭经济情况说明</view>
+        <textarea 
+          class="form-textarea" 
+          placeholder="请简要说明家庭经济情况（选填）" 
+          value="{{studentInfo.familyDesc}}"
+          bindinput="onFamilyDescInput"
+          maxlength="200"
+        />
+      </view>
+    </view>
+
+    <!-- 账户信息 -->
+    <view class="form-section">
+      <view class="section-title">账户信息</view>
+      
+      <view class="form-item">
+        <view class="form-label">密码 <text class="required">*</text></view>
+        <input 
+          class="form-input" 
+          type="password" 
+          placeholder="请设置密码（6-20位）" 
+          password="{{true}}"
+          value="{{password}}"
+          bindinput="onPasswordInput"
+        />
+      </view>
+
+      <view class="form-item">
+        <view class="form-label">确认密码 <text class="required">*</text></view>
+        <input 
+          class="form-input" 
+          type="password" 
+          placeholder="请再次输入密码" 
+          password="{{true}}"
+          value="{{confirmPassword}}"
+          bindinput="onConfirmPasswordInput"
+        />
+      </view>
+    </view>
+
+    <button class="btn-register btn-primary" bindtap="handleRegister">注册</button>
+    
+    <view class="register-footer">
+      <text class="login-link" bindtap="goToLogin">已有账号？立即登录</text>
+    </view>
+  </view>
+</view>

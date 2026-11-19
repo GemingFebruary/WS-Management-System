@@ -1,0 +1,258 @@
+/* pages/jobDetail/jobDetail.wxss */
+
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 140rpx;
+}
+
+/* 岗位头部 */
+.job-header {
+  margin: 20rpx;
+  padding: 30rpx;
+}
+
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20rpx;
+}
+
+.job-name {
+  flex: 1;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.match-badge {
+  background: linear-gradient(135deg, #4A90E2, #357ABD);
+  padding: 10rpx 20rpx;
+  border-radius: 8rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.match-label {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.match-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.job-department {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx;
+  color: #666666;
+  margin-bottom: 15rpx;
+}
+
+.dept-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 8rpx;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.job-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-tag {
+  padding: 6rpx 16rpx;
+  border-radius: 4rpx;
+  font-size: 24rpx;
+}
+
+.status-recruiting {
+  background-color: #f6ffed;
+  color: #52c41a;
+}
+
+.status-full {
+  background-color: #fff2f0;
+  color: #ff4d4f;
+}
+
+.publish-info {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+/* 详情区域 */
+.job-detail-section, .job-requirement, .job-content, .contact-info {
+  margin: 0 20rpx 20rpx;
+  padding: 25rpx;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding-bottom: 15rpx;
+  border-bottom: 2rpx solid #f0f0f0;
+}
+
+.title-icon {
+  width: 36rpx;
+  height: 36rpx;
+  margin-right: 10rpx;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.section-title text:last-child {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+/* 信息网格 */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 8rpx;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #333333;
+}
+
+.info-value.salary {
+  color: #ff6b35;
+  font-weight: bold;
+  font-size: 32rpx;
+}
+
+/* 岗位要求 */
+.requirement-content {
+  margin-bottom: 20rpx;
+}
+
+.req-text {
+  font-size: 28rpx;
+  color: #666666;
+  line-height: 1.8;
+}
+
+.require-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15rpx;
+}
+
+.req-tag {
+  background-color: #e6f7ff;
+  color: #4A90E2;
+  padding: 8rpx 16rpx;
+  border-radius: 4rpx;
+  font-size: 24rpx;
+}
+
+/* 工作内容 */
+.content-text {
+  font-size: 28rpx;
+  color: #666666;
+  line-height: 1.8;
+}
+
+/* 联系方式 */
+.contact-item {
+  display: flex;
+  margin-bottom: 15rpx;
+}
+
+.contact-item:last-child {
+  margin-bottom: 0;
+}
+
+.contact-label {
+  font-size: 28rpx;
+  color: #999999;
+  width: 150rpx;
+}
+
+.contact-value {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333333;
+}
+
+/* 底部操作栏 */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120rpx;
+  background-color: #ffffff;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30rpx;
+  z-index: 100;
+}
+
+.bar-left {
+  flex: 1;
+}
+
+.salary-display {
+  display: flex;
+  flex-direction: column;
+}
+
+.salary-label {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.salary-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ff6b35;
+}
+
+.bar-right {
+  flex-shrink: 0;
+}
+
+.btn-apply {
+  width: 240rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 30rpx;
+}
+
+.btn-applied {
+  width: 240rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  background-color: #f5f5f5;
+  color: #999999;
+  border-radius: 8rpx;
+  font-size: 30rpx;
+}
