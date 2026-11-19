@@ -7,7 +7,14 @@ const db = cloud.database()
 const _ = db.command
 
 // JWT 密钥（与 QGPY 保持一致，生产环境请从环境变量获取）
-const JWT_SECRET = process.env.JWT_SECRET || 'qgcloud-jwt-secret-2026'
+const JWT_SECRET = (() => {
+  const s = process.env.JWT_SECRET
+  if (s) return s
+  const isProd = process.env.NODE_ENV === 'production' || process.env.QG_ENV === 'production'
+  if (isProd) throw new Error('[auth] 生产环境未配置 JWT_SECRET，拒绝启动。请在云函数环境变量中设置强密钥。')
+  console.warn('[auth][安全] JWT_SECRET 未配置，使用开发默认密钥，生产环境请设置 JWT_SECRET。')
+  return 'qgcloud-jwt-secret-2026'
+})()
 const TOKEN_EXPIRE_HOURS = 24
 
 /**

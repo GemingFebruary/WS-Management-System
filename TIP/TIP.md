@@ -145,4 +145,43 @@
 
 ---
 
+---
+
+## 二十四、第十章「深度审查新发现」优化（2026-11-19）
+
+> 对归档文档第十章 NEW-02 ~ NEW-18 逐项复核，并优化仍存在的遗留项。
+
+### 已确认修复（复核通过）
+
+| 编号 | 问题 | 复核结果 |
+|------|------|---------|
+| NEW-02 | QGPY 匹配分数用随机数 | ✅ 已改为 `calculate_match_score()` |
+| NEW-03 | Vite 端口冲突 | ✅ `vite.config.ts` 已统一为 3001 |
+| NEW-04 | 注册密码明文 | ✅ `User.create()` 内含 bcrypt 哈希 |
+| NEW-05 | wx_cloud_db 注入 | ✅ 已用 `_escape_js_string()` 转义 |
+| NEW-06 | myApplications 跳转缺失页 | ✅ 已改为弹窗，无 applicationDetail |
+| NEW-07 | stop.bat 端口 | ✅ 已改为 3001 |
+| NEW-08 | TabBar 图标占位 | ✅ 已替换为 81×81 PNG |
+| NEW-09 | FLO 参考项目 | ✅ 本地保留、Git 与打包均忽略 |
+| NEW-10 | 伪 md5 函数 | ✅ 已删除 |
+| NEW-11 | orphan logs 页 | ✅ 已删除 |
+| NEW-14 | API_DOCUMENT 无效引用 | ✅ 已只引用 API_FULL.md |
+| NEW-15 | applicationDetail 缺失 | ✅ 已改弹窗 |
+| NEW-16 | ~$ 临时文件 | ✅ 已删除 |
+| NEW-18 | QGPY .env 未忽略 | ✅ 已创建 QGPY/.gitignore |
+
+### 本轮优化（代码层）
+
+| 编号 | 优化内容 |
+|------|---------|
+| NEW-12 | 云函数 `common/auth.js`（8 份）密钥分层：生产环境缺失 `JWT_SECRET` 拒绝启动，开发环境告警+默认值；`QGPY/config.py` 生产环境缺失 `JWT_SECRET_KEY` 抛错 |
+| NEW-13 | `initDB` 管理员密码改为 `process.env.ADMIN_PASSWORD`；文档密码统一加"仅开发环境默认，部署后必须修改"警示 |
+| NEW-17 | 移除 `project.config.json` 中指向不存在目录的 `cloudfunctionTemplateRoot` |
+
+### 验证
+
+- `node --check` 通过（cloud/common/auth.js、initDB/index.js）
+- `python -m py_compile` 通过（QGPY/config.py）
+- `project.config.json` JSON 校验通过
+
 *文档维护说明: 后续所有开发文档、开发日志均在 TIP/ 文件夹内生成/修改。*

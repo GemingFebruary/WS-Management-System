@@ -56,6 +56,11 @@ class ProductionConfig(Config):
     DEBUG = False
     ENV = 'production'
 
+    def __init__(self):
+        if not os.environ.get('JWT_SECRET_KEY'):
+            raise RuntimeError('生产环境必须设置 JWT_SECRET_KEY 环境变量，拒绝使用默认密钥启动')
+        super().__init__()
+
 
 class TestingConfig(Config):
     """测试环境配置"""

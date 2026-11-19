@@ -90,7 +90,8 @@ async function initDatabase() {
       const adminExist = await db.collection('users').where({ role: 'admin' }).get()
 
       if (adminExist.data.length === 0) {
-        const hashedPassword = await bcrypt.hash('admin123', 10)
+        const adminPassword = process.env.ADMIN_PASSWORD || 'admin123'
+        const hashedPassword = await bcrypt.hash(adminPassword, 10)
         const now = db.serverDate()
 
         await db.collection('users').add({
@@ -119,7 +120,7 @@ async function initDatabase() {
         adminResult = {
           status: 'created',
           account: 'admin',
-          password: 'admin123',
+          password: adminPassword,
           message: '请登录后及时修改密码！'
         }
         console.log('✅ 默认管理员账号创建成功')
