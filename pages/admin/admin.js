@@ -110,6 +110,11 @@ Page({
     wx.showToast({ title: '系统设置功能即将上线', icon: 'none' })
   },
 
+  // 选项库管理
+  optionManage() {
+    wx.navigateTo({ url: '/pages/admin/optionManage/optionManage' })
+  },
+
   // 匹配权重配置
   matchSettings() {
     wx.navigateTo({ url: '/pages/admin/matchSettings/matchSettings' })

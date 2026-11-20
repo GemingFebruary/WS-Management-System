@@ -17,7 +17,8 @@
     "pages/admin/noticeManage/noticeManage",
     "pages/admin/salaryManage/salaryManage",
     "pages/admin/matchSettings/matchSettings",
-    "pages/profile/editProfile/editProfile"
+    "pages/profile/editProfile/editProfile",
+    "pages/admin/optionManage/optionManage"
   ],
   "window": {
     "backgroundTextStyle": "light",

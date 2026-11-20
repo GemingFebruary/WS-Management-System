@@ -29,6 +29,8 @@ exports.main = async (event, context) => {
       return await deleteJob(event)
     case 'toggleStatus':
       return await toggleJobStatus(event)
+    case 'getOptions':
+      return await getStudyOptions()
     case 'getMatchConfig':
       return await getMatchConfig()
     case 'updateMatchConfig':
@@ -453,6 +455,19 @@ async function toggleJobStatus(event) {
 /**
  * 默认匹配权重（match_config 未配置时使用）
  */
+const DEFAULT_OPTIONS = {
+  colleges: ['信息科学与工程学院', '管理学院', '外国语学院', '艺术设计学院', '文学院', '数学与统计学院'],
+  majors: {
+    '信息科学与工程学院': ['计算机科学与技术', '软件工程', '网络工程', '数据科学与大数据技术'],
+    '管理学院': ['工商管理', '会计学', '人力资源管理', '市场营销'],
+    '外国语学院': ['英语', '日语', '翻译'],
+    '艺术设计学院': ['视觉传达设计', '环境设计', '数字媒体艺术'],
+    '文学院': ['汉语言文学', '新闻学', '广告学'],
+    '数学与统计学院': ['数学与应用数学', '统计学', '金融工程']
+  },
+  skills: ['Office办公软件', 'Photoshop', 'Python编程', '数据分析', '英语六级', '日语N2', '摄影摄像', '视频剪辑', 'C语言', 'Java编程', '写作能力', '排版设计', 'PPT制作', 'Excel数据处理', '沟通协调', '书法', '绘画', '音乐', '舞蹈', '活动策划']
+}
+
 const DEFAULT_MATCH_WEIGHTS = { skill: 25, time: 25, preference: 25, conflict: 25 }
 
 const MATCH_DIMENSION_META = [
@@ -461,6 +476,20 @@ const MATCH_DIMENSION_META = [
   { key: 'preference', name: '岗位类型偏好' },
   { key: 'conflict', name: '年级/课程' }
 ]
+
+/**
+ * 读取选项库（学院/专业/技能）
+ */
+async function getStudyOptions() {
+  try {
+    const res = await db.collection('system_options').doc('study').get()
+    const doc = res.data && res.data[0]
+    if (doc && doc.colleges) return success(doc)
+  } catch (err) {
+    console.warn('读取选项库失败，使用默认值:', err.message)
+  }
+  return success(DEFAULT_OPTIONS)
+}
 
 /**
  * 读取匹配权重配置
@@ -637,10 +666,31 @@ const TIME_PERIODS = ['上午', '中午', '午间', '下午', '晚上']
 
 function parseTimeKeywords(str) {
   const s = String(str || '')
+  const periods = TIME_PERIODS.filter(p => s.includes(p))
+  const inferred = inferPeriodsFromTimeRange(s)
   return {
     days: TIME_DAYS.filter(d => s.includes(d)),
-    periods: TIME_PERIODS.filter(p => s.includes(p))
+    periods: [...new Set([...periods, ...inferred])]
   }
+}
+
+/**
+ * 从时间区间（如 14:00-17:00）推断所覆盖的时段关键词
+ */
+function inferPeriodsFromTimeRange(str) {
+  const s = String(str || '')
+  const periods = []
+  const re = /(\d{1,2}):(\d{2})\s*[-—~]\s*(\d{1,2}):(\d{2})/g
+  let m
+  while ((m = re.exec(s)) !== null) {
+    const start = Number(m[1]) + Number(m[2]) / 60
+    const end = Number(m[3]) + Number(m[4]) / 60
+    if (start < 12) periods.push('上午')
+    if (start < 14 && end > 12) periods.push('中午')
+    if ((start >= 13 && start < 18) || (end > 14 && start < 18)) periods.push('下午')
+    if (end > 18) periods.push('晚上')
+  }
+  return [...new Set(periods)]
 }
 
 /**

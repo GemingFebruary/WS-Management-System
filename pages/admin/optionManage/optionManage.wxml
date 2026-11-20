@@ -1,0 +1,49 @@
+<!--pages/admin/optionManage/optionManage.wxml-->
+<view class="container">
+  <view class="card">
+    <view class="section-title">技能选项（学生编辑资料时多选）</view>
+    <view class="tag-list">
+      <view class="tag" wx:for="{{skills}}" wx:key="*this">
+        <text class="tag-text">{{item}}</text>
+        <text class="tag-del" data-name="{{item}}" bindtap="removeSkill">✕</text>
+      </view>
+    </view>
+    <view class="add-row">
+      <input class="form-input" value="{{newSkill}}" bindinput="onNewSkill" placeholder="输入新技能" />
+      <button class="btn-add" bindtap="addSkill">添加</button>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">学院选项</view>
+    <view class="tag-list">
+      <view class="tag" wx:for="{{colleges}}" wx:key="*this">
+        <text class="tag-text">{{item}}</text>
+        <text class="tag-del" data-name="{{item}}" bindtap="removeCollege">✕</text>
+      </view>
+    </view>
+    <view class="add-row">
+      <input class="form-input" value="{{newCollege}}" bindinput="onNewCollege" placeholder="输入新学院" />
+      <button class="btn-add" bindtap="addCollege">添加</button>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">专业选项（按学院）</view>
+    <picker range="{{colleges}}" bindchange="onActiveCollege" wx:if="{{colleges.length}}">
+      <view class="picker-current">{{activeCollege || '选择学院'}} ▾</view>
+    </picker>
+    <view class="tag-list" wx:if="{{activeCollege}}">
+      <view class="tag" wx:for="{{majors[activeCollege]}}" wx:key="*this">
+        <text class="tag-text">{{item}}</text>
+        <text class="tag-del" data-index="{{index}}" bindtap="removeMajor">✕</text>
+      </view>
+    </view>
+    <view class="add-row" wx:if="{{activeCollege}}">
+      <input class="form-input" value="{{newMajor}}" bindinput="onNewMajor" placeholder="给 {{activeCollege}} 添加专业" />
+      <button class="btn-add" bindtap="addMajor">添加</button>
+    </view>
+  </view>
+
+  <button class="btn-primary save-btn" bindtap="save" disabled="{{saving}}">{{saving ? '保存中...' : '保存选项库'}}</button>
+</view>

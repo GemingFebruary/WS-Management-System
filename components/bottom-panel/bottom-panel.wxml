@@ -1,0 +1,13 @@
+<!--components/bottom-panel/bottom-panel.wxml-->
+<view class="bp-mask" wx:if="{{show}}" bindtap="onOverlay">
+  <view class="bp-panel custom-class" catchtap="">
+    <view class="bp-header">
+      <text class="bp-title">{{title}}</text>
+      <text class="bp-close" bindtap="onClose">✕</text>
+    </view>
+    <scroll-view class="bp-body" scroll-y><slot></slot></scroll-view>
+    <view class="bp-footer" wx:if="{{showFooter}}">
+      <button class="bp-btn" bindtap="onConfirm">{{confirmText}}</button>
+    </view>
+  </view>
+</view>

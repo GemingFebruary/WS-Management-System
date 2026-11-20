@@ -32,7 +32,7 @@ async function initDatabase() {
 
   try {
     // 1. 创建集合
-    const collections = ['users', 'jobs', 'applications', 'salary_records', 'system_logs', 'notices', 'match_config']
+    const collections = ['users', 'jobs', 'applications', 'salary_records', 'system_logs', 'notices', 'match_config', 'system_options']
     const createResults = []
 
     for (const collectionName of collections) {
@@ -77,6 +77,33 @@ async function initDatabase() {
         }
       })
       console.log('✅ 匹配权重配置初始化完成（回退）')
+    }
+
+    // 1.2 初始化选项库（学院/专业/技能，用于编辑页选择）
+    try {
+      const opt = await db.collection('system_options').doc('study').get()
+      const exists = opt.data && opt.data.length > 0
+      if (!exists) {
+        await db.collection('system_options').add({
+          data: {
+            _id: 'study',
+            colleges: ['信息科学与工程学院', '管理学院', '外国语学院', '艺术设计学院', '文学院', '数学与统计学院'],
+            majors: {
+              '信息科学与工程学院': ['计算机科学与技术', '软件工程', '网络工程', '数据科学与大数据技术'],
+              '管理学院': ['工商管理', '会计学', '人力资源管理', '市场营销'],
+              '外国语学院': ['英语', '日语', '翻译'],
+              '艺术设计学院': ['视觉传达设计', '环境设计', '数字媒体艺术'],
+              '文学院': ['汉语言文学', '新闻学', '广告学'],
+              '数学与统计学院': ['数学与应用数学', '统计学', '金融工程']
+            },
+            skills: ['Office办公软件', 'Photoshop', 'Python编程', '数据分析', '英语六级', '日语N2', '摄影摄像', '视频剪辑', 'C语言', 'Java编程', '写作能力', '排版设计', 'PPT制作', 'Excel数据处理', '沟通协调', '书法', '绘画', '音乐', '舞蹈', '活动策划']
+          }
+        })
+        console.log('✅ 选项库初始化完成')
+      }
+    } catch (err) {
+      await db.collection('system_options').add({ data: { _id: 'study', colleges: [], majors: {}, skills: [] } })
+      console.log('✅ 选项库初始化完成（回退）')
     }
 
     // 2. 创建索引（性能优化）
@@ -349,7 +376,7 @@ async function resetDatabase() {
   console.log('开始重置数据库...')
 
   try {
-    const collections = ['users', 'jobs', 'applications', 'salary_records', 'system_logs', 'notices', 'match_config']
+    const collections = ['users', 'jobs', 'applications', 'salary_records', 'system_logs', 'notices', 'match_config', 'system_options']
 
     for (const collectionName of collections) {
       try {

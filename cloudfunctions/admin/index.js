@@ -31,9 +31,49 @@ exports.main = async (event, context) => {
       return await updateNotice(event)
     case 'deleteNotice':
       return await deleteNotice(event)
+    case 'getOptions':
+      return await getOptions(event)
+    case 'updateOptions':
+      return await updateOptions(event)
     default:
       return error(400, '未知的操作')
   }
+}
+
+/**
+ * 获取选项库（学院/专业/技能）
+ */
+async function getOptions(event) {
+  const userInfo = await verifyUser(event)
+  if (!userInfo || !verifyAdmin(userInfo)) return unauthorized('需要管理员权限')
+  try {
+    const res = await db.collection('system_options').doc('study').get()
+    const doc = res.data && res.data[0]
+    if (doc) return success(doc)
+    return success({ colleges: [], majors: {}, skills: [] })
+  } catch (err) {
+    console.error('getOptions error:', err)
+    return error(500, '获取选项失败')
+  }
+}
+
+/**
+ * 更新选项库（学院/专业/技能）
+ */
+async function updateOptions(event) {
+  const userInfo = await verifyUser(event)
+  if (!userInfo || !verifyAdmin(userInfo)) return unauthorized('需要管理员权限')
+  const { colleges, majors, skills } = event || {}
+  if (!Array.isArray(colleges) || !Array.isArray(skills) || typeof majors !== 'object' || majors === null) {
+    return badRequest('选项格式不正确')
+  }
+  const data = { colleges, majors, skills, updatedBy: userInfo.userId || 'admin', updateTime: db.serverDate() }
+  try {
+    await db.collection('system_options').doc('study').set({ data })
+  } catch (err) {
+    await db.collection('system_options').add({ data: { _id: 'study', ...data } })
+  }
+  return success(null, '选项已更新')
 }
 
 /**
