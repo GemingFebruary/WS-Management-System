@@ -27,6 +27,12 @@ exports.main = async (event, context) => {
       return await getUserInfo(event)
     case 'updateProfile':
       return await updateProfile(event)
+    case 'getMessages':
+      return await getMessages(event)
+    case 'markMessageRead':
+      return await markMessageRead(event)
+    case 'markAllMessagesRead':
+      return await markAllMessagesRead(event)
     default:
       return error(400, '未知的操作')
   }
@@ -371,5 +377,63 @@ async function addLog(userId, type, action, details) {
     })
   } catch (e) {
     console.warn('写日志失败:', e.message)
+  }
+}
+
+/**
+ * 获取我的消息（学生本人）
+ */
+async function getMessages(event) {
+  try {
+    const userInfo = await verifyUser(event)
+    if (!userInfo) return error(401, '未登录')
+    const { pageNum = 1, pageSize = 20 } = event
+    const where = { userId: userInfo.userId }
+    const count = await db.collection('messages').where(where).count()
+    const unread = await db.collection('messages').where({ userId: userInfo.userId, read: false }).count()
+    const res = await db.collection('messages').where(where)
+      .orderBy('createTime', 'desc')
+      .skip((Math.max(parseInt(pageNum) || 1, 1) - 1) * Math.min(parseInt(pageSize) || 20, 50))
+      .limit(Math.min(parseInt(pageSize) || 20, 50))
+      .get()
+    return success({ total: count.total, unread: unread.total, list: res.data })
+  } catch (err) {
+    console.error('getMessages error:', err)
+    return error(500, '获取消息失败')
+  }
+}
+
+/**
+ * 标记单条消息已读
+ */
+async function markMessageRead(event) {
+  try {
+    const userInfo = await verifyUser(event)
+    if (!userInfo) return error(401, '未登录')
+    const { messageId } = event
+    if (!messageId) return badRequest('消息ID不能为空')
+    await db.collection('messages').doc(messageId).update({ data: { read: true } })
+    return success(null, '已标记已读')
+  } catch (err) {
+    console.error('markMessageRead error:', err)
+    return error(500, '操作失败')
+  }
+}
+
+/**
+ * 全部已读
+ */
+async function markAllMessagesRead(event) {
+  try {
+    const userInfo = await verifyUser(event)
+    if (!userInfo) return error(401, '未登录')
+    const res = await db.collection('messages').where({ userId: userInfo.userId, read: false }).get()
+    for (const m of res.data) {
+      await db.collection('messages').doc(m._id).update({ data: { read: true } })
+    }
+    return success(null, '已全部已读')
+  } catch (err) {
+    console.error('markAllMessagesRead error:', err)
+    return error(500, '操作失败')
   }
 }

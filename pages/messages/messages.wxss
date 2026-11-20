@@ -1,0 +1,11 @@
+/* pages/messages/messages.wxss */
+.msg-header { display: flex; justify-content: space-between; align-items: center; padding: 24rpx; }
+.msg-title { font-size: 30rpx; font-weight: 600; }
+.msg-all { font-size: 26rpx; color: var(--color-primary); }
+.msg-card { padding: 24rpx; margin-bottom: 16rpx; }
+.msg-card.unread { border-left: 8rpx solid var(--color-primary); }
+.msg-top { display: flex; justify-content: space-between; margin-bottom: 8rpx; }
+.msg-type { font-size: 22rpx; padding: 4rpx 16rpx; border-radius: 16rpx; background: var(--color-primary-light); color: var(--color-primary-dark); }
+.msg-time { font-size: 22rpx; color: var(--color-text-hint); }
+.msg-title-text { font-size: 30rpx; color: var(--color-text); margin-bottom: 8rpx; }
+.msg-content { font-size: 26rpx; color: var(--color-text-secondary); line-height: 1.5; }

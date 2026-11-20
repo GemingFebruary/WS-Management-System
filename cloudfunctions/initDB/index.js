@@ -32,7 +32,7 @@ async function initDatabase() {
 
   try {
     // 1. 创建集合
-    const collections = ['users', 'jobs', 'applications', 'salary_records', 'system_logs', 'notices', 'match_config', 'system_options']
+    const collections = ['users', 'jobs', 'applications', 'salary_records', 'system_logs', 'notices', 'match_config', 'system_options', 'messages']
     const createResults = []
 
     for (const collectionName of collections) {
@@ -377,7 +377,7 @@ async function resetDatabase() {
   console.log('开始重置数据库...')
 
   try {
-    const collections = ['users', 'jobs', 'applications', 'salary_records', 'system_logs', 'notices', 'match_config', 'system_options']
+    const collections = ['users', 'jobs', 'applications', 'salary_records', 'system_logs', 'notices', 'match_config', 'system_options', 'messages']
 
     for (const collectionName of collections) {
       try {

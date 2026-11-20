@@ -160,5 +160,10 @@ Page({
   // 上拉加载更多
   onReachBottom() {
     this.loadApplicationList()
+  },
+
+  previewAttachment(e) {
+    const url = e.currentTarget.dataset.url
+    if (url) wx.previewImage({ current: url, urls: [url] })
   }
 })

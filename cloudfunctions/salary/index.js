@@ -491,6 +491,25 @@ async function processPayment(event) {
         }
       })
 
+    // 发送薪资发放消息
+    try {
+      const paid = await db.collection('salary_records').where(updateCondition)
+        .field({ studentId: true }).get()
+      const userIds = [...new Set(paid.data.map(r => r.studentId))]
+      for (const sid of userIds) {
+        await db.collection('messages').add({
+          data: {
+            userId: sid,
+            title: '薪资发放通知',
+            content: '您的 ' + (month || payDate) + ' 薪资已发放，可在「薪资查询」中查看明细。',
+            type: 'salary',
+            read: false,
+            createTime: now
+          }
+        })
+      }
+    } catch (e) { console.warn('发送薪资消息失败:', e.message) }
+
     return success(null, '薪资发放成功')
   } catch (err) {
     console.error('processPayment error:', err)

@@ -85,6 +85,12 @@ Page({
     })
   },
 
+  // 我的消息
+  goToMessages() {
+    if (!util.checkLogin()) return
+    wx.navigateTo({ url: '/pages/messages/messages' })
+  },
+
   // 编辑资料（独立页面）
   editProfile() {
     wx.navigateTo({ url: '/pages/profile/editProfile/editProfile' })

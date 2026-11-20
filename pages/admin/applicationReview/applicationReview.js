@@ -167,5 +167,10 @@ Page({
         }
       }
     })
+  },
+
+  previewAttachment(e) {
+    const url = e.currentTarget.dataset.url
+    if (url) wx.previewImage({ current: url, urls: [url] })
   }
 })

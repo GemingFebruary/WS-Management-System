@@ -48,6 +48,10 @@
           <text class="info-text">审核时间: {{item.reviewTime || '待审核'}}</text>
         </view>
         
+        <view class="app-attachments" wx:if="{{item.attachments && item.attachments.length}}">
+          <text class="reason-label">附件:</text>
+          <image wx:for="{{item.attachments}}" wx:for-item="att" wx:key="*this" src="{{att}}" class="att-thumb" mode="aspectFill" bindtap="previewAttachment" data-url="{{att}}" />
+        </view>
         <view class="app-footer" wx:if="{{item.status === 'rejected'}}">
           <text class="reject-reason">驳回原因: {{item.rejectReason}}</text>
         </view>

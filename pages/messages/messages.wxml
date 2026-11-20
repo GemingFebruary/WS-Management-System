@@ -1,0 +1,23 @@
+<!--pages/messages/messages.wxml-->
+<view class="container">
+  <view class="msg-header card">
+    <text class="msg-title">未读 {{unread}} 条</text>
+    <text class="msg-all" bindtap="markAll" wx:if="{{unread > 0}}">全部已读</text>
+  </view>
+  <view class="msg-list">
+    <view class="msg-card card {{item.read ? '' : 'unread'}}" wx:for="{{list}}" wx:key="_id" data-id="{{item._id}}" bindtap="onMessageTap">
+      <view class="msg-top">
+        <text class="msg-type type-{{item.type}}">{{item.type === 'apply' ? '申请' : item.type === 'salary' ? '薪资' : '系统'}}</text>
+        <text class="msg-time">{{item.createTime}}</text>
+      </view>
+      <view class="msg-title-text">{{item.title}}</view>
+      <view class="msg-content">{{item.content}}</view>
+    </view>
+    <view class="empty-state" wx:if="{{list.length === 0 && !loading}}">
+      <image class="empty-icon" src="/images/icon/empty-box.png" mode="aspectFit"></image>
+      <text class="empty-text">暂无消息</text>
+    </view>
+  </view>
+  <pagination current="{{pageNum}}" pageSize="{{pageSize}}" total="{{total}}" bindchange="onPageChange" />
+</view>
+<toast id="globalToast" />

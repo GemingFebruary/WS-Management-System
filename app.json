@@ -21,7 +21,8 @@
     "pages/admin/optionManage/optionManage",
     "pages/admin/jobEdit/jobEdit",
     "pages/admin/studentEdit/studentEdit",
-    "pages/admin/logManage/logManage"
+    "pages/admin/logManage/logManage",
+    "pages/messages/messages"
   ],
   "window": {
     "backgroundTextStyle": "light",

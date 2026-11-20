@@ -278,6 +278,19 @@ async function reviewApplication(event) {
     })
 
     await addLog(userInfo.userId || userInfo.name, 'review', '审核申请', { applyId, reviewAction })
+    // 发送审核结果消息给学生
+    try {
+      await db.collection('messages').add({
+        data: {
+          userId: appResult.data.studentId,
+          title: '申请审核结果',
+          content: '您的申请「' + (appResult.data.jobName || '') + '」' + (reviewAction === 'approve' ? '已通过' : '已驳回') + (reviewAction === 'reject' ? '，原因：' + (rejectReason || '') : ''),
+          type: 'apply',
+          read: false,
+          createTime: now
+        }
+      })
+    } catch (e) { console.warn('发送消息失败:', e.message) }
     return success(null, reviewAction === 'approve' ? '审核通过' : '已驳回')
   } catch (err) {
     console.error('reviewApplication error:', err)
@@ -314,6 +327,18 @@ async function batchReviewApplication(event) {
             rejectReason: reviewAction === 'reject' ? rejectReason : ''
           }
         })
+        try {
+          await db.collection('messages').add({
+            data: {
+              userId: rec.data.studentId,
+              title: '申请审核结果',
+              content: '您的申请「' + (rec.data.jobName || '') + '」' + (reviewAction === 'approve' ? '已通过' : '已驳回') + (reviewAction === 'reject' ? '，原因：' + rejectReason : ''),
+              type: 'apply',
+              read: false,
+              createTime: now
+            }
+          })
+        } catch (e) { console.warn('发送消息失败:', e.message) }
         processed++
       } catch (err) {
         console.error('批量审核单项失败:', id, err.message)

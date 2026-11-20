@@ -43,6 +43,10 @@
           <text>申请时间: {{item.applyTime}}</text>
           <text wx:if="{{item.reviewTime}}">审核: {{item.reviewTime}}</text>
         </view>
+        <view class="app-attachments" wx:if="{{item.attachments && item.attachments.length}}">
+          <text class="reason-label">附件:</text>
+          <image wx:for="{{item.attachments}}" wx:for-item="att" wx:key="*this" src="{{att}}" class="att-thumb" mode="aspectFill" bindtap="previewAttachment" data-url="{{att}}" />
+        </view>
         <view class="app-reason" wx:if="{{item.reason}}">
           <text class="reason-label">申请理由:</text>
           <text class="reason-content">{{item.reason}}</text>
