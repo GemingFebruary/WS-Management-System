@@ -31,6 +31,7 @@
         <view class="s-actions">
           <button class="btn-action btn-edit" bindtap="openEdit" data-id="{{item.userId}}">编辑</button>
           <button class="btn-action btn-reset" bindtap="resetPassword" data-id="{{item.userId}}">重置密码</button>
+        <button class="btn-action btn-role" bindtap="setRole" data-id="{{item.userId}}">设为管理员</button>
           <button class="btn-action {{item.status === 'active' ? 'btn-disable' : 'btn-enable'}}" bindtap="toggleStatus" data-id="{{item.userId}}">
             {{item.status === 'active' ? '禁用' : '启用'}}
           </button>

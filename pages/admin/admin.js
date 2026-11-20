@@ -88,6 +88,11 @@ Page({
     wx.navigateTo({ url: '/pages/admin/studentManage/studentManage' })
   },
 
+  // 数据统计（可视化）
+  dataStats() {
+    wx.navigateTo({ url: '/pages/admin/dataStats/dataStats' })
+  },
+
   // 数据导出
   async dataExport() {
     util.showLoading('导出中...')

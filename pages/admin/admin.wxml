@@ -128,6 +128,13 @@
         </view>
         <text class="menu-arrow">></text>
       </view>
+      <view class="menu-item" bindtap="dataStats">
+        <view class="menu-left">
+          <image class="menu-icon" src="/images/icon/data-line.png" mode="aspectFit"></image>
+          <text class="menu-text">数据统计</text>
+        </view>
+        <text class="menu-arrow">></text>
+      </view>
       <view class="menu-item" bindtap="dataExport">
         <view class="menu-left">
           <image class="menu-icon" src="/images/icon/download.png" mode="aspectFit"></image>

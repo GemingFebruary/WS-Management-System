@@ -1,0 +1,25 @@
+<!--pages/admin/dataStats/dataStats.wxml-->
+<view class="container">
+  <view class="stat-cards">
+    <view class="stat-card card"><text class="stat-value">{{stats.jobTotal}}</text><text class="stat-label">岗位总数</text></view>
+    <view class="stat-card card"><text class="stat-value">{{stats.appTotal}}</text><text class="stat-label">申请总数</text></view>
+    <view class="stat-card card"><text class="stat-value">{{stats.totalHours}}</text><text class="stat-label">总工时</text></view>
+    <view class="stat-card card"><text class="stat-value">{{stats.avgHours}}</text><text class="stat-label">人均工时</text></view>
+  </view>
+
+  <view class="card chart-card">
+    <view class="chart-title">岗位供需比</view>
+    <ec-canvas canvas-id="ecJob" id="ecJob" ec="{{ecJob}}" />
+  </view>
+
+  <view class="card chart-card">
+    <view class="chart-title">申请通过情况</view>
+    <ec-canvas canvas-id="ecApp" id="ecApp" ec="{{ecApp}}" />
+  </view>
+
+  <view class="card chart-card">
+    <view class="chart-title">酬金分布（按月）</view>
+    <ec-canvas canvas-id="ecSalary" id="ecSalary" ec="{{ecSalary}}" />
+  </view>
+</view>
+<toast id="globalToast" />

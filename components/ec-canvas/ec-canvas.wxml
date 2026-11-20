@@ -1,0 +1,2 @@
+<!--components/ec-canvas/ec-canvas.wxml-->
+<canvas type="2d" id="{{canvasId}}" class="ec-canvas" style="width:100%;height:280px;"></canvas>

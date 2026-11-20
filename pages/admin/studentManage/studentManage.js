@@ -103,5 +103,26 @@ Page({
         }
       }
     })
+  },
+
+  // 设为管理员
+  setRole(e) {
+    const id = e.currentTarget.dataset.id
+    const s = this.data.studentList.find(st => st.userId === id)
+    if (!s) return
+    wx.showModal({
+      title: '设为管理员',
+      content: `确定将「${s.name}」设为管理员？`,
+      success: async (res) => {
+        if (!res.confirm) return
+        util.showLoading('处理中...')
+        try {
+          const result = await util.callAdmin('setUserRole', { userId: id, role: 'admin' })
+          util.hideLoading()
+          if (result.code === 200) { util.showSuccess('已设为管理员'); this.loadStudents() }
+          else util.showError(result.message || '操作失败')
+        } catch (err) { util.hideLoading(); util.handleCloudError(err, '操作失败') }
+      }
+    })
   }
 })

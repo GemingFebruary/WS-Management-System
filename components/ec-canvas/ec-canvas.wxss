@@ -1,0 +1,2 @@
+/* components/ec-canvas/ec-canvas.wxss */
+.ec-canvas { display: block; width: 100%; }

@@ -33,6 +33,10 @@ exports.main = async (event, context) => {
       return await deleteNotice(event)
     case 'getOptions':
       return await getOptions(event)
+    case 'setUserRole':
+      return await setUserRole(event)
+    case 'statsDetail':
+      return await getStatsDetail(event)
     case 'getLogs':
       return await getLogs(event)
     case 'backupData':
@@ -78,6 +82,65 @@ async function updateOptions(event) {
     await db.collection('system_options').add({ data: { _id: 'study', ...data } })
   }
   return success(null, '选项已更新')
+}
+
+/**
+ * 数据统计详情（图表数据）
+ */
+async function getStatsDetail(event) {
+  const userInfo = await verifyUser(event)
+  if (!userInfo || !verifyAdmin(userInfo)) return unauthorized('需要管理员权限')
+  try {
+    const jobs = await db.collection('jobs').field({ status: true, jobCategory: true }).limit(1000).get()
+    const jobByStatus = { recruiting: 0, full: 0, closed: 0 }
+    const jobByCategory = {}
+    jobs.data.forEach(j => {
+      jobByStatus[j.status] = (jobByStatus[j.status] || 0) + 1
+      const c = j.jobCategory || '未分类'
+      jobByCategory[c] = (jobByCategory[c] || 0) + 1
+    })
+
+    const apps = await db.collection('applications').field({ status: true }).limit(2000).get()
+    const appByStatus = { pending: 0, approved: 0, rejected: 0, cancelled: 0 }
+    apps.data.forEach(a => { appByStatus[a.status] = (appByStatus[a.status] || 0) + 1 })
+
+    const sals = await db.collection('salary_records').field({ workHours: true, amount: true, month: true }).limit(2000).get()
+    let totalHours = 0, totalSalary = 0
+    const salaryByMonth = {}
+    sals.data.forEach(s => {
+      totalHours += s.workHours || 0
+      totalSalary += s.amount || 0
+      const m = s.month || '未知'
+      salaryByMonth[m] = (salaryByMonth[m] || 0) + (s.amount || 0)
+    })
+    const avgHours = apps.data.length ? Math.round((totalHours / apps.data.length) * 10) / 10 : 0
+
+    return success({
+      jobByStatus, jobByCategory, appByStatus,
+      jobTotal: jobs.data.length, appTotal: apps.data.length,
+      totalHours: Math.round(totalHours * 10) / 10,
+      totalSalary: Math.round(totalSalary * 10) / 10,
+      avgHours, salaryByMonth
+    })
+  } catch (err) {
+    console.error('getStatsDetail error:', err)
+    return error(500, '获取统计详情失败')
+  }
+}
+
+/**
+ * 设置用户角色（管理员）
+ */
+async function setUserRole(event) {
+  const userInfo = await verifyUser(event)
+  if (!userInfo || !verifyAdmin(userInfo)) return unauthorized('需要管理员权限')
+  const { userId, role } = event
+  if (!userId || (role !== 'student' && role !== 'admin')) return badRequest('参数错误')
+  const target = await db.collection('users').where({ userId }).get()
+  if (!target.data || target.data.length === 0) return error(404, '用户不存在')
+  await db.collection('users').where({ userId }).update({ data: { role, updateTime: db.serverDate() } })
+  await addLog(userInfo.userId || 'admin', 'student', '调整用户角色', { userId, role })
+  return success(null, '角色已更新')
 }
 
 /**

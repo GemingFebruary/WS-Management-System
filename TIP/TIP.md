@@ -297,4 +297,23 @@
 - 33 处原生 `wx.showToast` 收敛为 `util.showSuccess` / `util.showError` / `util.showToast`。
 - 自测：组件与调度层 4/4 通过（组件渲染、成功/失败类型、原生回退）。
 
+---
+
+## 三十一、模块补全（2026-11-20）
+
+对照开题 7 个一级模块 / 21 个二级子模块，补齐以下缺口：
+
+| 编号 | 补全内容 |
+|------|---------|
+| B5 | 岗位分类字典：`system_options.jobCategories`，选项库可维护，岗位发布/编辑可选分类 |
+| A1 | 批量审核：审核页多选/全选/批量通过/批量驳回（含统一意见）；applications 云函数 `batchReview` |
+| B3 | 操作日志：`admin/logManage` 页 + `getLogs`；auth/jobs/applications/admin 关键操作写入 `system_logs` |
+| B4 | 数据备份：`admin` 云函数 `backupData` 导出各集合 JSON 上传云存储；日志页内置备份入口 |
+| C6 | 我的消息：`messages` 集合 + auth 消息接口 + 学生端消息页；审核与薪资发放自动通知 |
+| A2 | 申请材料：我的申请/审核页展示附件并可预览（申请页已具备上传） |
+| E8 | 角色权限：`admin.setUserRole`，学生管理可"设为管理员" |
+| D7 | 数据可视化：`ec-canvas`（含 echarts）+ `admin/dataStats` 页（岗位供需/申请通过/酬金分布） |
+
+打包体积约 0.97MB（< 2MB）。
+
 *文档维护说明: 后续所有开发文档、开发日志均在 TIP/ 文件夹内生成/修改。*

@@ -22,7 +22,8 @@
     "pages/admin/jobEdit/jobEdit",
     "pages/admin/studentEdit/studentEdit",
     "pages/admin/logManage/logManage",
-    "pages/messages/messages"
+    "pages/messages/messages",
+    "pages/admin/dataStats/dataStats"
   ],
   "window": {
     "backgroundTextStyle": "light",
