@@ -90,9 +90,6 @@
         <view class="job-card card" bindtap="goToJobDetail" data-job-id="{{item.jobId}}">
           <view class="job-header">
             <text class="job-name">{{item.jobName}}</text>
-            <view class="match-tag" wx:if="{{item.matchScore > 0}}">
-              匹配度 {{item.matchScore}}%
-            </view>
           </view>
           <view class="job-info">
             <text class="info-item"><image class="info-item-icon" src="/images/icon/location.png" mode="aspectFit"></image> {{item.department}}</text>
@@ -102,6 +99,8 @@
             <text class="info-item"><image class="info-item-icon" src="/images/icon/clock.png" mode="aspectFit"></image> {{item.workTime}}</text>
             <text class="info-item salary"><image class="info-item-icon" src="/images/icon/money.png" mode="aspectFit"></image> ¥{{item.salary}}/时</text>
           </view>
+          <match-score score="{{item.matchScore}}" dimensions="{{item.matchDimensions}}" reasons="{{item.matchReasons}}" showDetail="{{false}}" />
+
           <view class="job-footer">
             <text class="recruit-num">招聘 {{item.recruitNum}} 人</text>
             <text class="status-tag status-{{item.status}}">{{item.statusText}}</text>

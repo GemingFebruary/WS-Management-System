@@ -1,0 +1,26 @@
+<!--components/match-score/match-score.wxml-->
+<view class="match-score" wx:if="{{score > 0}}">
+  <view class="ms-header">
+    <text class="ms-label">匹配度</text>
+    <text class="ms-value">{{score}}<text class="ms-unit">%</text></text>
+  </view>
+  <view class="ms-bar"><view class="ms-fill" style="width: {{score}}%"></view></view>
+
+  <view class="ms-dims" wx:if="{{showDetail}}">
+    <view class="ms-dim" wx:for="{{dimensions}}" wx:key="key">
+      <view class="ms-dim-top">
+        <text class="ms-dim-name">{{item.name}}</text>
+        <text class="ms-dim-meta">{{item.score}}分 · 权重{{item.weight}}%</text>
+      </view>
+      <view class="ms-dim-bar"><view class="ms-dim-fill" style="width: {{item.score}}%"></view></view>
+      <text class="ms-dim-detail">{{item.detail}}</text>
+    </view>
+  </view>
+
+  <view class="ms-reasons" wx:if="{{showDetail && reasons.length}}">
+    <view class="ms-reason" wx:for="{{reasons}}" wx:key="*this">
+      <text class="ms-reason-dot">•</text>
+      <text class="ms-reason-text">{{item}}</text>
+    </view>
+  </view>
+</view>

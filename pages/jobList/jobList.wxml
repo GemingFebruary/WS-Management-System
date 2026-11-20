@@ -60,9 +60,6 @@
       <view class="job-card card" bindtap="goToJobDetail" data-job-id="{{item.jobId}}">
         <view class="job-header">
           <text class="job-name">{{item.jobName}}</text>
-          <view class="match-tag" wx:if="{{item.matchScore > 0}}">
-            {{item.matchScore}}%
-          </view>
         </view>
         
         <view class="job-dept">{{item.department}}</view>
@@ -80,6 +77,8 @@
           </view>
         </view>
         
+        <match-score score="{{item.matchScore}}" dimensions="{{item.matchDimensions}}" reasons="{{item.matchReasons}}" showDetail="{{false}}" />
+
         <view class="job-footer">
           <text class="status-tag status-{{item.status}}">{{item.statusText}}</text>
           <text class="publish-date">{{item.publishDate}}</text>

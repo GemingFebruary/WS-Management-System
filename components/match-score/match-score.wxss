@@ -1,0 +1,20 @@
+/* components/match-score/match-score.wxss */
+.match-score { margin-top: 16rpx; }
+.ms-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8rpx; }
+.ms-label { font-size: 24rpx; color: var(--color-text-secondary); }
+.ms-value { font-size: 34rpx; font-weight: 700; color: var(--color-primary); }
+.ms-unit { font-size: 22rpx; margin-left: 2rpx; }
+.ms-bar { height: 12rpx; background: var(--color-bg); border-radius: 6rpx; overflow: hidden; }
+.ms-fill { height: 100%; background: linear-gradient(90deg, var(--color-primary-light), var(--color-primary)); border-radius: 6rpx; }
+.ms-dims { margin-top: 20rpx; }
+.ms-dim { margin-bottom: 18rpx; }
+.ms-dim-top { display: flex; justify-content: space-between; margin-bottom: 6rpx; }
+.ms-dim-name { font-size: 26rpx; color: var(--color-text); }
+.ms-dim-meta { font-size: 22rpx; color: var(--color-text-hint); }
+.ms-dim-bar { height: 8rpx; background: var(--color-bg); border-radius: 4rpx; overflow: hidden; }
+.ms-dim-fill { height: 100%; background: var(--color-primary); border-radius: 4rpx; }
+.ms-dim-detail { display: block; font-size: 22rpx; color: var(--color-text-hint); margin-top: 6rpx; }
+.ms-reasons { margin-top: 16rpx; padding-top: 16rpx; border-top: 1rpx solid var(--color-border); }
+.ms-reason { display: flex; margin-bottom: 8rpx; }
+.ms-reason-dot { color: var(--color-primary); margin-right: 10rpx; }
+.ms-reason-text { font-size: 24rpx; color: var(--color-text-secondary); line-height: 1.5; }

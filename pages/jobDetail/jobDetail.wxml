@@ -4,10 +4,6 @@
   <view class="job-header card">
     <view class="header-top">
       <text class="job-name">{{jobInfo.jobName}}</text>
-      <view class="match-badge" wx:if="{{jobInfo.matchScore > 0}}">
-        <text class="match-label">匹配度</text>
-        <text class="match-value">{{jobInfo.matchScore}}%</text>
-      </view>
     </view>
     
     <view class="job-department">
@@ -19,6 +15,7 @@
       <text class="status-tag status-{{jobInfo.status}}">{{jobInfo.statusText}}</text>
       <text class="publish-info">发布于 {{jobInfo.publishDate}}</text>
     </view>
+    <match-score score="{{jobInfo.matchScore}}" dimensions="{{jobInfo.matchDimensions}}" reasons="{{jobInfo.matchReasons}}" showDetail="{{true}}" />
   </view>
 
   <!-- 岗位详细信息 -->
