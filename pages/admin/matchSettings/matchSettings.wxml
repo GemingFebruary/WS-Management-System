@@ -1,0 +1,20 @@
+<!--pages/admin/matchSettings/matchSettings.wxml-->
+<view class="container">
+  <view class="tip card">
+    <text class="tip-title">可配置多维加权匹配</text>
+    <text class="tip-desc">调整各维度权重（0-100），保存后立即生效。权重越大，该维度对匹配度的影响越大。</text>
+  </view>
+
+  <view class="card form-card">
+    <view class="form-item" wx:for="{{dimensions}}" wx:key="key" data-key="{{item.key}}">
+      <view class="form-header">
+        <text class="form-label">{{item.name}}</text>
+        <text class="form-value">{{weights[item.key]}}</text>
+      </view>
+      <slider min="0" max="100" step="5" value="{{weights[item.key]}}" data-key="{{item.key}}" bindchange="onWeightChange" activeColor="#4A90E2" block-size="20"></slider>
+      <text class="form-desc">{{item.desc}}</text>
+    </view>
+  </view>
+
+  <button class="btn-primary save-btn" bindtap="saveConfig" disabled="{{saving}}">{{saving ? '保存中...' : '保存配置'}}</button>
+</view>

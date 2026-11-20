@@ -184,4 +184,45 @@
 - `python -m py_compile` 通过（QGPY/config.py）
 - `project.config.json` JSON 校验通过
 
+---
+
+## 二十五、阶段 1：可配置多维加权匹配模型实施（2026-11-20）
+
+### 目标
+
+落实开题核心：**可配置的多维加权人岗匹配**，并输出**可解释**的匹配结果（评分 + 维度分解 + 匹配依据）。
+
+### 数据层
+
+- 新增集合 `match_config`：存储四维度权重，默认各 25，管理员可配置。
+- `users` 新增 `preferredJobTypes`（岗位类型偏好）、`courses`（课程时间）；复用 `skills`、`freeTime`、`grade`。
+- `jobs` 新增 `requiredSkills`（技能要求）。
+
+### 匹配维度与算法
+
+| 维度 | 学生字段 | 岗位字段 | 计分规则 |
+|------|---------|---------|---------|
+| 技能标签 | skills | requiredSkills | 命中数 / 要求数 × 100；无要求=100 |
+| 可工作时间 | freeTime | workTime | 星期重合 60% + 时段重合 40% |
+| 岗位类型偏好 | preferredJobTypes | jobType | 符合=100 / 不符=20 / 未设置=60 |
+| 年级/课程 | grade、courses | requiredGrade、workTime | 年级不符=0；课程冲突=40；否则=100 |
+
+**匹配度** = Σ(维度分 × 权重) / Σ权重 × 100，输出 `matchScore` + `matchDimensions`（分解）+ `matchReasons`（依据）。
+
+### 接口与页面
+
+- `jobs` 云函数新增 `getMatchConfig`、`updateMatchConfig`；`list` / `detail` / `recommend` 返回匹配分解与依据。
+- 管理端新增 `pages/admin/matchSettings`（滑杆配置权重），admin 首页「系统管理 → 匹配权重」入口。
+- `initDB` 创建 `match_config` 并初始化默认权重；`seedData` 补充技能/偏好/课程字段。
+
+### 验证
+
+- `node --check` 通过：jobs、initDB、seedData、matchSettings.js
+- `app.json` 页面注册与 JSON 校验通过
+
+### 待办
+
+- 阶段 2：学生端匹配度可视化（进度条 / 维度分解 / 匹配依据）。
+- 需**重新部署** jobs / initDB / seedData 云函数后生效。
+
 *文档维护说明: 后续所有开发文档、开发日志均在 TIP/ 文件夹内生成/修改。*

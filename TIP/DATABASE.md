@@ -19,7 +19,7 @@
 
 ## 二、集合（Collection）结构
 
-系统共有 5 个集合：`users`、`jobs`、`applications`、`salary_records`、`system_logs`。
+系统共有 6 个集合：`users`、`jobs`、`applications`、`salary_records`、`system_logs`、`match_config`。
 
 ### 2.1 users — 用户集合
 
@@ -43,6 +43,8 @@
 | freeTime | string | 否 | 空闲时间（用于智能匹配） |
 | skills | string / array | 否 | 技能 |
 | experience | string | 否 | 经验 |
+| preferredJobTypes | array | 否 | 岗位类型偏好（如 ["校内","校外"]），用于智能匹配 |
+| courses | string | 否 | 课程时间（如 "周一上午 高等数学"），用于课程冲突检测 |
 | status | string | 是 | 状态：`active` / `disabled` |
 | createTime | Date | 否 | 创建时间（`db.serverDate()`） |
 | updateTime | Date | 否 | 更新时间（`db.serverDate()`） |
@@ -78,6 +80,7 @@
 | minGpa | number | 否 | 最低 GPA（默认 0，表示不限） |
 | contactPerson | string | 否 | 联系人 |
 | contactPhone | string | 否 | 联系电话 |
+| requiredSkills | array | 否 | 技能要求（如 ["Office办公软件","服务意识"]），用于智能匹配 |
 | contactEmail | string | 否 | 联系邮箱 |
 | publishDate | Date | 否 | 发布时间（`db.serverDate()`） |
 | createTime | Date | 否 | 创建时间（`db.serverDate()`） |
@@ -92,7 +95,7 @@
 | `{ department: 1 }` | 普通索引 | 按部门筛选 |
 | `{ jobType: 1 }` | 普通索引 | 按岗位类型筛选 |
 
-**说明**: 智能匹配算法会根据 `requiredMajor`、`requiredGrade`、`minGpa`、`workTime` 四个字段计算匹配度（`matchScore`），权重分别为 30%、20%、25%、25%。
+**说明**: 智能匹配采用**可配置的多维加权模型**（见 2.6 `match_config`），四个维度为：技能标签、可工作时间、岗位类型偏好、年级/课程。匹配度 = Σ(维度分×权重)/Σ权重 ×100，并返回维度分解（`matchDimensions`）与匹配依据（`matchReasons`）。
 
 ---
 
@@ -182,6 +185,17 @@
 | createTime | Date | 否 | 创建时间（`db.serverDate()`） |
 
 **索引**: 当前无自定义索引（由 initDB 创建集合时统一处理）。
+
+### 2.6 match_config — 匹配权重配置集合
+
+| 字段名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| _id | string | 是 | 固定为 `match` |
+| weights | object | 是 | 权重：`{ skill, time, preference, conflict }`，默认各 25 |
+| updatedBy | string | 否 | 最后修改人（admin userId） |
+| updateTime | Date | 否 | 更新时间（`db.serverDate()`） |
+
+**说明**: 管理员可在小程序「管理后台 → 系统管理 → 匹配权重」调整各维度权重，保存后立即生效。缺失时使用默认权重。
 
 ---
 

@@ -37,6 +37,30 @@ const SKILLS_OPTIONS = [
   '音乐、舞蹈、活动策划'
 ]
 
+const PREFERRED_JOB_TYPES = [
+  ['校内', '校外'], ['校内'], ['校外'], ['校内', '校外'], ['校内'],
+  ['校外'], ['校内', '校外'], ['校内'], ['校外'], ['校内', '校外'],
+  ['校内'], ['校外'], ['校内', '校外'], ['校内'], ['校外'],
+  ['校内', '校外'], ['校内'], ['校外'], ['校内'], ['校内', '校外']
+]
+
+const COURSE_OPTIONS = [
+  '周一上午 高等数学', '周二下午 大学英语', '周三上午 数据结构', '周四下午 体育', '周五上午 马克思主义基本原理',
+  '周一晚上 软件工程', '周二上午 线性代数', '周三下午 计算机网络', '周四上午 数据库原理', '周五下午 毕业实习',
+  '周一上午 操作系统', '周二下午 概率论', '周三上午 编译原理', '周四下午 人工智能导论', '周五上午 软件工程',
+  '周一晚上 大数据技术', '周二上午 网络安全', '周三下午 云计算', '周四上午 移动开发', '周五下午 创新创业'
+]
+
+const JOB_SKILLS = [
+  ['图书整理', '服务意识'], ['计算机操作', '设备维护'], ['Windows/Linux', '硬件维护', '编程基础'],
+  ['Git', 'VS Code', '软件工程'], ['Office办公软件', '保密意识'], ['沟通协调', '服务意识'],
+  ['普通话', '办公软件'], ['文案写作', '活动策划'], ['市场营销', '新媒体运营'],
+  ['教学辅助', '耐心细致'], ['行政管理', '档案整理'], ['财务基础', 'Excel'],
+  ['招生宣传', '沟通能力'], ['体育器材管理', '体力'], ['网络基础', 'Linux服务器管理'],
+  ['餐饮服务', '吃苦耐劳'], ['新闻写作', '图片处理'], ['语音设备操作', '英语'],
+  ['MATLAB', 'Python', '数学建模'], ['快递分拣', '体力']
+]
+
 const FAMILY_DESCS = [
   '父母均为农民，家庭年收入约3万元', '父亲工厂工人，母亲在家务农',
   '单亲家庭，母亲做保洁工作', '父母下岗，靠低保生活',
@@ -145,6 +169,8 @@ async function createTestStudents() {
       gpa: parseFloat((2.5 + (i % 16) * 0.1).toFixed(1)),
       freeTime: FREE_TIME_OPTIONS[i % FREE_TIME_OPTIONS.length],
       skills: SKILLS_OPTIONS[i % SKILLS_OPTIONS.length],
+      preferredJobTypes: PREFERRED_JOB_TYPES[i % PREFERRED_JOB_TYPES.length],
+      courses: COURSE_OPTIONS[i % COURSE_OPTIONS.length],
       experience: i % 3 === 0 ? '有相关实践经验' : (i % 3 === 1 ? '学生会干部经历' : '暂无相关经验'),
       createTime: new Date(now.getTime() - (30 - i) * 24 * 60 * 60 * 1000),
       updateTime: now,
@@ -180,6 +206,7 @@ async function createTestJobs() {
 
     jobs.push({
       ...tmpl, status,
+      requiredSkills: JOB_SKILLS[i % JOB_SKILLS.length],
       publishDate: new Date(now.getTime() - (JOB_TEMPLATES.length - i) * 3 * 24 * 60 * 60 * 1000),
       createTime: new Date(now.getTime() - (JOB_TEMPLATES.length - i) * 3 * 24 * 60 * 60 * 1000),
       updateTime: now,

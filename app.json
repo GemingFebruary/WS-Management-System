@@ -15,7 +15,8 @@
     "pages/admin/applicationReview/applicationReview",
     "pages/admin/studentManage/studentManage",
     "pages/admin/noticeManage/noticeManage",
-    "pages/admin/salaryManage/salaryManage"
+    "pages/admin/salaryManage/salaryManage",
+    "pages/admin/matchSettings/matchSettings"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -32,7 +32,7 @@ async function initDatabase() {
 
   try {
     // 1. 创建集合
-    const collections = ['users', 'jobs', 'applications', 'salary_records', 'system_logs', 'notices']
+    const collections = ['users', 'jobs', 'applications', 'salary_records', 'system_logs', 'notices', 'match_config']
     const createResults = []
 
     for (const collectionName of collections) {
@@ -50,6 +50,33 @@ async function initDatabase() {
           throw err
         }
       }
+    }
+
+    // 1.1 初始化匹配权重配置（可配置多维加权匹配）
+    try {
+      const cfg = await db.collection('match_config').doc('match').get()
+      const exists = cfg.data && cfg.data.length > 0
+      if (!exists) {
+        await db.collection('match_config').add({
+          data: {
+            _id: 'match',
+            weights: { skill: 25, time: 25, preference: 25, conflict: 25 },
+            updatedBy: 'system',
+            updateTime: db.serverDate()
+          }
+        })
+        console.log('✅ 匹配权重配置初始化完成')
+      }
+    } catch (err) {
+      await db.collection('match_config').add({
+        data: {
+          _id: 'match',
+          weights: { skill: 25, time: 25, preference: 25, conflict: 25 },
+          updatedBy: 'system',
+          updateTime: db.serverDate()
+        }
+      })
+      console.log('✅ 匹配权重配置初始化完成（回退）')
     }
 
     // 2. 创建索引（性能优化）
@@ -322,7 +349,7 @@ async function resetDatabase() {
   console.log('开始重置数据库...')
 
   try {
-    const collections = ['users', 'jobs', 'applications', 'salary_records', 'system_logs', 'notices']
+    const collections = ['users', 'jobs', 'applications', 'salary_records', 'system_logs', 'notices', 'match_config']
 
     for (const collectionName of collections) {
       try {

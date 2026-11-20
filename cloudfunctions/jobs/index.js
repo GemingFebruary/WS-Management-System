@@ -29,6 +29,10 @@ exports.main = async (event, context) => {
       return await deleteJob(event)
     case 'toggleStatus':
       return await toggleJobStatus(event)
+    case 'getMatchConfig':
+      return await getMatchConfig()
+    case 'updateMatchConfig':
+      return await updateMatchConfig(event)
     default:
       return error(400, '未知的操作')
   }
@@ -162,8 +166,10 @@ async function getJobDetail(event) {
     // 计算匹配度
     const userInfo = await verifyUser(event)
     if (userInfo && userInfo.role === 'student') {
-      const score = calculateSingleMatchScore(jobData, userInfo)
-      jobData.matchScore = score
+      const m = await calculateMatchSingle(jobData, userInfo)
+      jobData.matchScore = m.score
+      jobData.matchDimensions = m.dimensions
+      jobData.matchReasons = m.reasons
     }
 
     // 确保返回统一的 jobId 字段
@@ -444,92 +450,235 @@ async function toggleJobStatus(event) {
 /**
  * 计算岗位列表的匹配度
  */
+/**
+ * 默认匹配权重（match_config 未配置时使用）
+ */
+const DEFAULT_MATCH_WEIGHTS = { skill: 25, time: 25, preference: 25, conflict: 25 }
+
+const MATCH_DIMENSION_META = [
+  { key: 'skill', name: '技能标签' },
+  { key: 'time', name: '可工作时间' },
+  { key: 'preference', name: '岗位类型偏好' },
+  { key: 'conflict', name: '年级/课程' }
+]
+
+/**
+ * 读取匹配权重配置
+ */
+async function getMatchWeights() {
+  try {
+    const res = await db.collection('match_config').doc('match').get()
+    const doc = res.data && res.data[0]
+    if (doc && doc.weights) return normalizeWeights(doc.weights)
+  } catch (err) {
+    console.warn('读取匹配权重失败，使用默认值:', err.message)
+  }
+  return { ...DEFAULT_MATCH_WEIGHTS }
+}
+
+function normalizeWeights(w) {
+  const toNum = (v) => {
+    const n = Number(v)
+    return Number.isFinite(n) && n >= 0 ? n : 0
+  }
+  w = w || {}
+  return {
+    skill: toNum(w.skill),
+    time: toNum(w.time),
+    preference: toNum(w.preference),
+    conflict: toNum(w.conflict)
+  }
+}
+
+/**
+ * 获取匹配权重配置
+ */
+async function getMatchConfig() {
+  const weights = await getMatchWeights()
+  return success({ weights, dimensions: MATCH_DIMENSION_META })
+}
+
+/**
+ * 更新匹配权重配置（仅管理员）
+ */
+async function updateMatchConfig(event) {
+  const { weights } = event || {}
+  if (!weights) return badRequest('缺少权重参数')
+  const w = normalizeWeights(weights)
+  const total = w.skill + w.time + w.preference + w.conflict
+  if (total <= 0) return badRequest('权重总和必须大于 0')
+
+  const admin = await verifyAdmin(event)
+  if (!admin) return unauthorized('仅管理员可配置匹配权重')
+
+  const data = {
+    weights: w,
+    updatedBy: admin.userId || 'admin',
+    updateTime: db.serverDate()
+  }
+  try {
+    await db.collection('match_config').doc('match').set({ data })
+  } catch (err) {
+    await db.collection('match_config').add({ data: { _id: 'match', ...data } })
+  }
+  return success({ weights: w }, '匹配权重已更新')
+}
+
+/**
+ * 计算单个岗位匹配（含权重）
+ */
+async function calculateMatchSingle(job, studentInfo) {
+  const weights = await getMatchWeights()
+  return computeMatch(job, studentInfo, weights)
+}
+
+/**
+ * 批量计算匹配
+ */
 async function calculateMatchScores(jobs, studentInfo) {
+  const weights = await getMatchWeights()
   return jobs.map(job => {
-    const score = calculateSingleMatchScore(job, studentInfo)
+    const m = computeMatch(job, studentInfo, weights)
     return {
       ...job,
-      matchScore: score
+      matchScore: m.score,
+      matchDimensions: m.dimensions,
+      matchReasons: m.reasons
     }
   })
 }
 
 /**
- * 计算单个岗位的匹配度
+ * 匹配度计算核心：可解释的多维加权模型
+ * 输出 { score(0-100), dimensions(维度分解), reasons(匹配依据) }
  */
-function calculateSingleMatchScore(job, studentInfo) {
-  let score = 0
-  let totalWeight = 0
+function computeMatch(job, studentInfo, weights) {
+  const dims = []
+  const reasons = []
+  const w = normalizeWeights(weights)
+  const totalW = w.skill + w.time + w.preference + w.conflict
 
-  // 专业匹配 (权重30)
-  if (studentInfo.major && job.requiredMajor) {
-    totalWeight += 30
-    if (studentInfo.major === job.requiredMajor) {
-      score += 30
-    }
-  } else if (!job.requiredMajor) {
-    // 没有专业要求，给基础分
-    score += 15
-    totalWeight += 30
-  }
-
-  // 年级匹配 (权重20)
-  if (studentInfo.grade && job.requiredGrade) {
-    totalWeight += 20
-    if (studentInfo.grade === job.requiredGrade) {
-      score += 20
-    }
-  } else if (!job.requiredGrade) {
-    score += 10
-    totalWeight += 20
-  }
-
-  // 成绩匹配 (权重25)
-  if (studentInfo.gpa && job.minGpa) {
-    totalWeight += 25
-    if (studentInfo.gpa >= job.minGpa) {
-      score += 25
-    }
-  } else if (!job.minGpa || job.minGpa === 0) {
-    score += 12.5
-    totalWeight += 25
-  }
-
-  // 时间匹配 (权重25)
-  if (studentInfo.freeTime && job.workTime) {
-    totalWeight += 25
-    const matchTime = checkTimeMatch(studentInfo.freeTime, job.workTime)
-    score += 25 * matchTime
+  // 1. 技能标签匹配度
+  const reqSkills = toStringArray(job.requiredSkills)
+  const stuSkills = toStringArray(studentInfo.skills)
+  let skillScore = 100
+  let skillDetail = '岗位无技能要求'
+  let skillHit = []
+  if (reqSkills.length > 0) {
+    skillHit = reqSkills.filter(s => stuSkills.includes(s))
+    skillScore = Math.round((skillHit.length / reqSkills.length) * 100)
+    skillDetail = skillHit.length
+      ? `命中 ${skillHit.length}/${reqSkills.length} 项技能`
+      : '未命中任何技能要求'
+    if (skillHit.length) reasons.push(`技能匹配：${skillHit.join('、')}`)
   } else {
-    score += 12.5
-    totalWeight += 25
+    reasons.push('岗位无技能要求')
   }
+  dims.push({ key: 'skill', name: '技能标签', score: skillScore, weight: w.skill, detail: skillDetail })
 
-  return totalWeight > 0 ? Math.round((score / totalWeight) * 100) : 50
+  // 2. 可工作时间重合度
+  const timeScore = calcTimeOverlap(studentInfo.freeTime, job.workTime)
+  const timeDetail = `空闲「${studentInfo.freeTime || '未填写'}」 vs 岗位「${job.workTime || '未填写'}」`
+  dims.push({ key: 'time', name: '可工作时间', score: timeScore, weight: w.time, detail: timeDetail })
+  reasons.push(timeScore >= 80 ? '时间高度重合' : timeScore >= 50 ? '时间部分重合' : '时间重合度低')
+
+  // 3. 岗位类型偏好
+  const prefs = toStringArray(studentInfo.preferredJobTypes)
+  let prefScore = 60
+  let prefDetail = '未设置岗位偏好（中性）'
+  if (prefs.length === 0) {
+    reasons.push('未设置岗位偏好')
+  } else if (prefs.includes(String(job.jobType || '').trim().toLowerCase())) {
+    prefScore = 100
+    prefDetail = `符合偏好类型：${job.jobType}`
+    reasons.push(`符合偏好类型：${job.jobType}`)
+  } else {
+    prefScore = 20
+    prefDetail = `与偏好类型不符（偏好：${prefs.join('/')}）`
+    reasons.push('与偏好类型不符')
+  }
+  dims.push({ key: 'preference', name: '岗位类型偏好', score: prefScore, weight: w.preference, detail: prefDetail })
+
+  // 4. 年级与课程冲突
+  let conflictScore = 100
+  const conflictMsgs = []
+  if (job.requiredGrade && studentInfo.grade && job.requiredGrade !== studentInfo.grade) {
+    conflictScore = 0
+    conflictMsgs.push(`年级不符（要求 ${job.requiredGrade}）`)
+  }
+  if (hasCourseConflict(studentInfo.courses, job.workTime)) {
+    conflictScore = Math.min(conflictScore, 40)
+    conflictMsgs.push('课程时间可能冲突')
+  }
+  if (conflictMsgs.length === 0) conflictMsgs.push('年级与课程无冲突')
+  reasons.push(conflictMsgs.join('；'))
+  dims.push({ key: 'conflict', name: '年级/课程', score: conflictScore, weight: w.conflict, detail: conflictMsgs.join('；') })
+
+  const score = totalW > 0
+    ? Math.round((skillScore * w.skill + timeScore * w.time + prefScore * w.preference + conflictScore * w.conflict) / totalW)
+    : 50
+
+  return { score, dimensions: dims, reasons }
 }
 
 /**
- * 检查时间是否匹配
+ * 将字符串/数组统一为去重小写标签数组
  */
-function checkTimeMatch(freeTime, workTime) {
-  if (!freeTime || !workTime) return 0.5
-
-  // 简单的时间匹配逻辑，可根据实际情况优化
-  const freeTimeStr = freeTime.toLowerCase()
-  const workTimeStr = workTime.toLowerCase()
-
-  if (freeTimeStr.includes(workTimeStr) || workTimeStr.includes(freeTimeStr)) {
-    return 1
+function toStringArray(v) {
+  if (Array.isArray(v)) return v.map(s => String(s).trim().toLowerCase()).filter(Boolean)
+  if (typeof v === 'string' && v.trim()) {
+    return v.split(/[,，、;；\s]+/).map(s => s.trim().toLowerCase()).filter(Boolean)
   }
+  return []
+}
 
-  // 检查是否有重叠
-  const timeKeywords = ['周一', '周二', '周三', '周四', '周五', '周六', '周日', '上午', '下午', '晚上']
-  let matchCount = 0
-  for (const keyword of timeKeywords) {
-    if (freeTimeStr.includes(keyword) && workTimeStr.includes(keyword)) {
-      matchCount++
-    }
+const TIME_DAYS = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+const TIME_PERIODS = ['上午', '中午', '午间', '下午', '晚上']
+
+function parseTimeKeywords(str) {
+  const s = String(str || '')
+  return {
+    days: TIME_DAYS.filter(d => s.includes(d)),
+    periods: TIME_PERIODS.filter(p => s.includes(p))
   }
+}
 
-  return matchCount > 0 ? 0.6 : 0.2
+/**
+ * 计算可工作时间重合度（0-100）
+ */
+function calcTimeOverlap(freeTime, workTime) {
+  if (!freeTime || !workTime) return 60
+  const f = parseTimeKeywords(freeTime)
+  const w = parseTimeKeywords(workTime)
+  if (w.days.length === 0 && w.periods.length === 0) return 50
+  let score = 0
+  if (w.days.length > 0) {
+    const hit = w.days.filter(d => f.days.includes(d)).length
+    score += 60 * (hit / w.days.length)
+  } else if (f.days.length > 0) {
+    score += 60
+  }
+  if (w.periods.length > 0) {
+    const hit = w.periods.filter(p => f.periods.includes(p)).length
+    score += 40 * (hit / w.periods.length)
+  } else if (f.periods.length > 0) {
+    score += 40
+  }
+  if (score === 0) return 20
+  return Math.round(score)
+}
+
+/**
+ * 课程冲突检测：学生课程时间与岗位工作时间在同一天同一时段即视为冲突
+ */
+function hasCourseConflict(courses, workTime) {
+  const c = String(courses || '')
+  if (!c.trim()) return false
+  const w = parseTimeKeywords(workTime)
+  if (w.days.length === 0 && w.periods.length === 0) return false
+  const cDays = TIME_DAYS.filter(d => c.includes(d))
+  const cPeriods = TIME_PERIODS.filter(p => c.includes(p))
+  const dayClash = w.days.some(d => cDays.includes(d))
+  const periodClash = w.periods.some(p => cPeriods.includes(p))
+  return dayClash && periodClash
 }
