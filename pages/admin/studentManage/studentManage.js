@@ -8,15 +8,7 @@ Page({
     searchKeyword: '',
     pageNum: 1,
     pageSize: 20,
-    total: 0,
-    // 编辑弹窗
-    showEditModal: false,
-    editTargetId: '',
-    editForm: {
-      name: '', gender: '', college: '', major: '', grade: '',
-      phone: '', email: '', gpa: 0, familyType: '', familyDesc: '', status: 'active',
-      freeTime: '', skills: '', experience: '', preferredJobTypes: [], courses: ''
-    }
+    total: 0
   },
 
   onLoad(options) {
@@ -42,9 +34,9 @@ Page({
         this.setData({ studentList: list, total: result.data.total || 0, loading: false })
         // 自动打开从申请页面跳转过来的学生
         if (this._pendingStudentId) {
-          const target = list.find(s => s.studentId === this._pendingStudentId || s.userId === this._pendingStudentId)
-          if (target) this.openEdit({ currentTarget: { dataset: { id: target.userId } } })
+          const id = this._pendingStudentId
           this._pendingStudentId = null
+          wx.navigateTo({ url: '/pages/admin/studentEdit/studentEdit?userId=' + id })
         }
       } else {
         this.setData({ loading: false })
@@ -66,66 +58,8 @@ Page({
   openEdit(e) {
     const id = e.currentTarget.dataset.id
     wx.navigateTo({ url: '/pages/admin/studentEdit/studentEdit?userId=' + id })
-    return
-    const s = this.data.studentList.find(st => st.userId === id)
-    if (!s) return
-    this.setData({
-      showEditModal: true,
-      editTargetId: s.userId || '',
-      editForm: {
-        name: s.name || '', gender: s.gender || '', college: s.college || '',
-        major: s.major || '', grade: s.grade || '', phone: s.phone || '',
-        email: s.email || '', gpa: s.gpa || 0, familyType: s.familyType || '',
-        familyDesc: s.familyDesc || '', status: s.status || 'active',
-        freeTime: s.freeTime || '',
-        skills: Array.isArray(s.skills) ? s.skills.join('、') : (s.skills || ''),
-        experience: s.experience || '',
-        preferredJobTypes: s.preferredJobTypes || [],
-        courses: s.courses || ''
-      }
-    })
   },
 
-  onEditField(e) {
-    const field = e.currentTarget.dataset.field
-    let value = e.detail.value
-    // picker 返回索引，需要映射为实际值
-    const pickerMap = {
-      gender: ['男', '女'],
-      familyType: ['一般', '困难', '特别困难'],
-      status: ['active', 'disabled']
-    }
-    if (pickerMap[field]) {
-      value = pickerMap[field][e.detail.value] || value
-    }
-    this.setData({ [`editForm.${field}`]: value })
-  },
-
-  onEditNumberField(e) {
-    const field = e.currentTarget.dataset.field
-    this.setData({ [`editForm.${field}`]: Number(e.detail.value) || 0 })
-  },
-
-  closeEditModal() { this.setData({ showEditModal: false }) },
-
-  async saveEdit() {
-    util.showLoading('保存中...')
-    try {
-      const result = await util.callAdmin('updateStudent', {
-        userId: this.data.editTargetId,
-        ...this.data.editForm
-      })
-      util.hideLoading()
-      if (result.code === 200) {
-        util.showSuccess('保存成功')
-        this.setData({ showEditModal: false })
-        this.loadStudents()
-      }
-    } catch (err) {
-      util.hideLoading()
-      util.handleCloudError(err, '更新失败')
-    }
-  },
 
   // 切换状态
   toggleStatus(e) {

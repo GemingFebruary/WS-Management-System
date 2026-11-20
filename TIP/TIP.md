@@ -278,4 +278,13 @@
 - `jobs` 云函数新增 `getOptions`；匹配算法支持从时间区间（`HH:MM-HH:MM`）推断时段。
 - 自测：组件逻辑 5/5 通过；页面组件注册一致性校验通过。
 
+---
+
+## 二十九、死代码清理（2026-11-20）
+
+- `jobManage.js` / `studentManage.js`：移除旧编辑弹窗相关的 data（showEditModal/isEdit/jobForm/editForm/editTargetId）与方法（onFormField/onFormNumberField/closeEditModal/submitJob/onEditField/saveEdit 及 openEdit 死代码）；"从申请页跳转自动编辑"改为跳转独立页。
+- `utils/util.js`：删除未使用函数——`request`、`calculateMatchScore`、`checkTimeMatch`、`throttle`、`isValidLength`、`validateRegisterForm`、`validateApplicationForm`、`formatTime`、`isValidStudentId`、`sanitizeText`（保留 `formatDate`/`formatNumber`，被 `formatCloudDate` 使用）。
+- `applyJob.js`：删除未使用的 `clearFieldError`。
+- 校验：`node --check` 通过；全项目扫描确认无残留引用（云函数 `validator.js` 的同名函数为独立实现，不受影响）。
+
 *文档维护说明: 后续所有开发文档、开发日志均在 TIP/ 文件夹内生成/修改。*

@@ -1,18 +1,5 @@
 // utils/util.js
 
-/**
- * 格式化时间
- */
-const formatTime = date => {
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  const hour = date.getHours()
-  const minute = date.getMinutes()
-  const second = date.getSeconds()
-
-  return `${[year, month, day].map(formatNumber).join('-')} ${[hour, minute, second].map(formatNumber).join(':')}`
-}
 
 const formatDate = date => {
   const year = date.getFullYear()
@@ -80,37 +67,6 @@ const showError = (title = '操作失败') => {
   })
 }
 
-/**
- * 发送网络请求（HTTP方式）
- */
-const request = (options) => {
-  const app = getApp()
-  const baseUrl = app.globalData.baseUrl
-  
-  return new Promise((resolve, reject) => {
-    wx.request({
-      url: baseUrl + options.url,
-      method: options.method || 'GET',
-      data: options.data || {},
-      header: {
-        'Content-Type': 'application/json',
-        'Authorization': wx.getStorageSync('token') || ''
-      },
-      success: (res) => {
-        if (res.statusCode === 200) {
-          resolve(res.data)
-        } else {
-          showError(res.data.message || '请求失败')
-          reject(res.data)
-        }
-      },
-      fail: (err) => {
-        showError('网络请求失败')
-        reject(err)
-      }
-    })
-  })
-}
 
 /**
  * 调用云函数（推荐方式）
@@ -195,54 +151,7 @@ const checkLogin = () => {
   return true
 }
 
-/**
- * 计算匹配度
- */
-const calculateMatchScore = (studentInfo, jobInfo) => {
-  let score = 0
-  let totalWeight = 0
-  
-  // 专业匹配
-  if (studentInfo.major && jobInfo.requiredMajor) {
-    totalWeight += 30
-    if (studentInfo.major === jobInfo.requiredMajor) {
-      score += 30
-    }
-  }
-  
-  // 年级匹配
-  if (studentInfo.grade && jobInfo.requiredGrade) {
-    totalWeight += 20
-    if (studentInfo.grade === jobInfo.requiredGrade) {
-      score += 20
-    }
-  }
-  
-  // 成绩匹配
-  if (studentInfo.gpa && jobInfo.minGpa) {
-    totalWeight += 25
-    if (studentInfo.gpa >= jobInfo.minGpa) {
-      score += 25
-    }
-  }
-  
-  // 空闲时间匹配
-  if (studentInfo.freeTime && jobInfo.workTime) {
-    totalWeight += 25
-    const matchTime = checkTimeMatch(studentInfo.freeTime, jobInfo.workTime)
-    score += 25 * matchTime
-  }
-  
-  return totalWeight > 0 ? Math.round((score / totalWeight) * 100) : 0
-}
 
-/**
- * 检查时间是否匹配
- */
-const checkTimeMatch = (freeTime, workTime) => {
-  if (!freeTime || !workTime) return 0.5
-  return freeTime.includes(workTime) ? 1 : 0.3
-}
 
 /**
  * 获取岗位状态文本
@@ -302,22 +211,6 @@ const debounce = (fn, delay = 300) => {
   }
 }
 
-/**
- * 节流函数
- * @param {Function} fn - 要执行的函数
- * @param {number} interval - 间隔时间（毫秒）
- * @returns {Function}
- */
-const throttle = (fn, interval = 300) => {
-  let lastTime = 0
-  return function(...args) {
-    const now = Date.now()
-    if (now - lastTime >= interval) {
-      lastTime = now
-      fn.apply(this, args)
-    }
-  }
-}
 
 /**
  * 处理云函数错误
@@ -364,15 +257,6 @@ const isValidEmail = (email) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
-/**
- * 验证学号格式（字母+数字，6-20位）
- * @param {string} studentId - 学号
- * @returns {boolean}
- */
-const isValidStudentId = (studentId) => {
-  if (!studentId) return false
-  return /^[a-zA-Z0-9]{6,20}$/.test(studentId)
-}
 
 /**
  * 验证密码强度（6-20位）
@@ -384,78 +268,11 @@ const isValidPassword = (password) => {
   return password.length >= 6 && password.length <= 20
 }
 
-/**
- * 验证字符串长度
- * @param {string} str - 输入字符串
- * @param {number} maxLen - 最大长度
- * @returns {boolean}
- */
-const isValidLength = (str, maxLen = 500) => {
-  if (!str) return true
-  return str.length <= maxLen
-}
 
-/**
- * 清理文本输入（去除首尾空白、限制长度）
- * @param {string} str - 输入字符串
- * @param {number} maxLen - 最大长度
- * @returns {string}
- */
-const sanitizeText = (str, maxLen = 500) => {
-  if (!str || typeof str !== 'string') return ''
-  return str.trim().substring(0, maxLen)
-}
 
-/**
- * 验证注册表单
- * @param {object} data - 注册数据
- * @returns {{ valid: boolean, message: string }}
- */
-const validateRegisterForm = (data) => {
-  if (!data.studentId || !data.name || !data.password) {
-    return { valid: false, message: '学号、姓名和密码为必填项' }
-  }
-  if (!isValidStudentId(data.studentId)) {
-    return { valid: false, message: '学号格式不正确（6-20位字母+数字）' }
-  }
-  if (!isValidPassword(data.password)) {
-    return { valid: false, message: '密码长度需为6-20位' }
-  }
-  if (data.phone && !isValidPhone(data.phone)) {
-    return { valid: false, message: '手机号格式不正确' }
-  }
-  if (data.email && !isValidEmail(data.email)) {
-    return { valid: false, message: '邮箱格式不正确' }
-  }
-  return { valid: true, message: '' }
-}
 
-/**
- * 验证申请表单
- * @param {object} data - 申请数据
- * @returns {{ valid: boolean, message: string }}
- */
-const validateApplicationForm = (data) => {
-  if (!data.jobId) {
-    return { valid: false, message: '请选择要申请的岗位' }
-  }
-  if (!data.reason || !data.reason.trim()) {
-    return { valid: false, message: '请填写申请理由' }
-  }
-  if (!isValidLength(data.reason, 500)) {
-    return { valid: false, message: '申请理由不能超过500字' }
-  }
-  if (data.phone && !isValidPhone(data.phone)) {
-    return { valid: false, message: '手机号格式不正确' }
-  }
-  if (data.email && !isValidEmail(data.email)) {
-    return { valid: false, message: '邮箱格式不正确' }
-  }
-  return { valid: true, message: '' }
-}
 
 module.exports = {
-  formatTime,
   formatDate,
   formatCloudDate,
   formatNumber,
@@ -463,7 +280,6 @@ module.exports = {
   hideLoading,
   showSuccess,
   showError,
-  request,
   callCloudFunction,
   callAuth,
   callJobs,
@@ -471,20 +287,12 @@ module.exports = {
   callSalary,
   callAdmin,
   checkLogin,
-  calculateMatchScore,
-  checkTimeMatch,
   getJobStatusText,
   getApplicationStatusText,
   getPayStatusText,
   debounce,
-  throttle,
   handleCloudError,
   isValidPhone,
   isValidEmail,
-  isValidStudentId,
   isValidPassword,
-  isValidLength,
-  sanitizeText,
-  validateRegisterForm,
-  validateApplicationForm
 }

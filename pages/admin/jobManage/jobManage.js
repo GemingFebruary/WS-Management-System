@@ -13,22 +13,12 @@ Page({
       { label: '已满员', value: 'full' },
       { label: '已关闭', value: 'closed' }
     ],
-    statusFilterIndex: 0,
-    // 编辑弹窗
-    showEditModal: false,
-    isEdit: false,
-    jobForm: {
-      jobId: '', jobName: '', department: '', jobType: '校内', workTime: '',
-      salary: 15, recruitNum: 1, requirement: '', jobContent: '',
-      requiredMajor: '', requiredGrade: '', minGpa: 0,
-      contactPerson: '', contactPhone: '', contactEmail: ''
-    }
+    statusFilterIndex: 0
   },
 
   onLoad(options) {
     this.loadJobList()
-    if (options && options.mode === 'add') this.openCreate()
-    // 从申请页面跳转过来时自动打开对应岗位的编辑弹窗
+    // 从申请页面跳转过来时自动打开对应岗位的编辑页
     if (options && options.jobId) {
       this._pendingJobId = options.jobId
     }
@@ -54,9 +44,9 @@ Page({
         this.setData({ jobList: jobs, loading: false })
         // 自动打开从申请页面跳转过来的岗位
         if (this._pendingJobId) {
-          const target = jobs.find(j => j.jobId === this._pendingJobId || j._id === this._pendingJobId)
-          if (target) this.openEdit({ currentTarget: { dataset: { id: target.jobId } } })
+          const id = this._pendingJobId
           this._pendingJobId = null
+          wx.navigateTo({ url: '/pages/admin/jobEdit/jobEdit?jobId=' + id })
         }
       } else {
         this.setData({ loading: false })
@@ -87,46 +77,6 @@ Page({
     wx.navigateTo({ url: '/pages/admin/jobEdit/jobEdit?jobId=' + id })
   },
 
-  onFormField(e) {
-    const field = e.currentTarget.dataset.field
-    let value = e.detail.value
-    // picker 返回索引，需要映射为实际值
-    const pickerMap = { jobType: ['校内', '校外'] }
-    if (pickerMap[field]) {
-      value = pickerMap[field][e.detail.value] || value
-    }
-    this.setData({ [`jobForm.${field}`]: value })
-  },
-  onFormNumberField(e) {
-    const field = e.currentTarget.dataset.field
-    this.setData({ [`jobForm.${field}`]: Number(e.detail.value) || 0 })
-  },
-
-  closeEditModal() { this.setData({ showEditModal: false }) },
-
-  // 提交表单
-  async submitJob() {
-    const f = this.data.jobForm
-    if (!f.jobName.trim() || !f.department.trim()) {
-      util.showError('请填写岗位名称和所属部门')
-      return
-    }
-    util.showLoading(this.data.isEdit ? '保存中...' : '发布中...')
-    try {
-      const result = this.data.isEdit
-        ? await util.callJobs('update', { ...f })
-        : await util.callJobs('create', { ...f })
-      util.hideLoading()
-      if (result.code === 200) {
-        util.showSuccess(this.data.isEdit ? '保存成功' : '发布成功')
-        this.setData({ showEditModal: false })
-        this.loadJobList()
-      }
-    } catch (err) {
-      util.hideLoading()
-      util.handleCloudError(err, '操作失败')
-    }
-  },
 
   // 切换状态（三状态）— picker 返回索引
   changeStatus(e) {

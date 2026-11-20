@@ -198,14 +198,7 @@ Page({
   },
 
   // 清除字段错误
-  clearFieldError(e) {
-    const field = e.currentTarget.dataset.field
-    if (field) {
-      this.setData({
-        [`${field}Error`]: ''
-      })
-    }
-  },
+
 
   // 提交申请
   async handleSubmit() {
