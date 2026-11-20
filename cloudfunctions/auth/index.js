@@ -25,6 +25,8 @@ exports.main = async (event, context) => {
       return await logout(event)
     case 'getUserInfo':
       return await getUserInfo(event)
+    case 'updateProfile':
+      return await updateProfile(event)
     default:
       return error(400, '未知的操作')
   }
@@ -292,12 +294,68 @@ async function getUserInfo(event) {
       gpa: userInfo.gpa,
       freeTime: userInfo.freeTime,
       skills: userInfo.skills,
-      experience: userInfo.experience
+      experience: userInfo.experience,
+      preferredJobTypes: userInfo.preferredJobTypes || [],
+      courses: userInfo.courses || ''
     }
 
     return success(safeUserInfo)
   } catch (err) {
     console.error('getUserInfo error:', err)
     return error(500, '获取用户信息失败')
+  }
+}
+
+/**
+ * 更新个人资料（学生本人维护匹配画像）
+ */
+async function updateProfile(event) {
+  try {
+    const userInfo = await verifyUser(event)
+    if (!userInfo) {
+      return error(401, '未登录')
+    }
+
+    const allowedFields = [
+      'name', 'gender', 'college', 'major', 'grade', 'phone', 'email',
+      'gpa', 'freeTime', 'skills', 'preferredJobTypes', 'courses',
+      'experience', 'familyType', 'familyDesc'
+    ]
+    const updateData = {}
+    for (const key of allowedFields) {
+      if (event[key] !== undefined) updateData[key] = event[key]
+    }
+    if (Object.keys(updateData).length === 0) {
+      return error(400, '没有需要更新的字段')
+    }
+
+    // 输入校验
+    if (updateData.phone !== undefined && updateData.phone !== '' && !isValidPhone(updateData.phone)) {
+      return badRequest('手机号格式不正确')
+    }
+    if (updateData.email !== undefined && updateData.email !== '' && !isValidEmail(updateData.email)) {
+      return badRequest('邮箱格式不正确')
+    }
+    if (updateData.gpa !== undefined) {
+      const g = Number(updateData.gpa)
+      if (!Number.isFinite(g) || g < 0 || g > 4) {
+        return badRequest('GPA 需在 0-4 之间')
+      }
+      updateData.gpa = g
+    }
+    if (updateData.preferredJobTypes !== undefined && !Array.isArray(updateData.preferredJobTypes)) {
+      return badRequest('岗位类型偏好格式不正确')
+    }
+    if (updateData.name !== undefined) {
+      updateData.name = sanitizeText(String(updateData.name)).trim()
+      if (!updateData.name) return badRequest('姓名不能为空')
+    }
+
+    updateData.updateTime = db.serverDate()
+    await db.collection('users').where({ userId: userInfo.userId }).update({ data: updateData })
+    return success(null, '更新成功')
+  } catch (err) {
+    console.error('updateProfile error:', err)
+    return error(500, '更新失败')
   }
 }

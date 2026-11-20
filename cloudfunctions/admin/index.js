@@ -171,7 +171,7 @@ async function updateStudent(event) {
     const allowedFields = [
       'name', 'gender', 'college', 'major', 'grade',
       'phone', 'email', 'familyType', 'familyDesc',
-      'gpa', 'freeTime', 'skills', 'experience', 'status'
+      'gpa', 'freeTime', 'skills', 'experience', 'preferredJobTypes', 'courses', 'status'
     ]
 
     const updateData = {}

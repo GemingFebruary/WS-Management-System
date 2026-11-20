@@ -1,0 +1,19 @@
+/* pages/profile/editProfile/editProfile.wxss */
+.form-card { padding: 8rpx 24rpx; }
+.form-row { display: flex; }
+.form-group { margin-bottom: 24rpx; flex: 1; }
+.form-group.half { flex: 1; margin-right: 16rpx; }
+.form-group.half:last-child { margin-right: 0; }
+.form-label { display: block; font-size: 26rpx; color: var(--color-text-secondary); margin-bottom: 10rpx; }
+.form-input {
+  width: 100%; height: 76rpx; line-height: 76rpx; padding: 0 20rpx;
+  background: var(--color-bg); border-radius: var(--radius-sm);
+  font-size: 28rpx; color: var(--color-text); box-sizing: border-box;
+}
+.form-textarea {
+  width: 100%; height: 140rpx; padding: 16rpx 20rpx; background: var(--color-bg);
+  border-radius: var(--radius-sm); font-size: 28rpx; box-sizing: border-box;
+}
+.checkbox-label { display: inline-block; margin-right: 40rpx; font-size: 28rpx; color: var(--color-text); }
+.save-btn { margin: 16rpx 24rpx; }
+.tip-text { text-align: center; font-size: 22rpx; color: var(--color-text-hint); padding: 0 24rpx 40rpx; }

@@ -11,7 +11,8 @@ Page({
     editTargetId: '',
     editForm: {
       name: '', gender: '', college: '', major: '', grade: '',
-      phone: '', email: '', gpa: 0, familyType: '', familyDesc: '', status: 'active'
+      phone: '', email: '', gpa: 0, familyType: '', familyDesc: '', status: 'active',
+      freeTime: '', skills: '', experience: '', preferredJobTypes: [], courses: ''
     }
   },
 
@@ -66,7 +67,12 @@ Page({
         name: s.name || '', gender: s.gender || '', college: s.college || '',
         major: s.major || '', grade: s.grade || '', phone: s.phone || '',
         email: s.email || '', gpa: s.gpa || 0, familyType: s.familyType || '',
-        familyDesc: s.familyDesc || '', status: s.status || 'active'
+        familyDesc: s.familyDesc || '', status: s.status || 'active',
+        freeTime: s.freeTime || '',
+        skills: Array.isArray(s.skills) ? s.skills.join('、') : (s.skills || ''),
+        experience: s.experience || '',
+        preferredJobTypes: s.preferredJobTypes || [],
+        courses: s.courses || ''
       }
     })
   },

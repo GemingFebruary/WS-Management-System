@@ -84,36 +84,9 @@ Page({
     })
   },
 
-  // 编辑资料
+  // 编辑资料（独立页面）
   editProfile() {
-    const userInfo = this.data.userInfo || {}
-    wx.showModal({
-      title: '编辑资料',
-      editable: true,
-      placeholderText: '请输入新的姓名',
-      content: userInfo.name || '',
-      success: (res) => {
-        if (res.confirm && res.content) {
-          const newName = res.content.trim()
-          if (!newName) {
-            util.showError('姓名不能为空')
-            return
-          }
-          util.showLoading('保存中...')
-          util.callAuth('updateProfile', { name: newName }).then(result => {
-            util.hideLoading()
-            if (result.code === 200) {
-              app.globalData.userInfo.name = newName
-              this.setData({ 'userInfo.name': newName })
-              util.showSuccess('保存成功')
-            }
-          }).catch(err => {
-            util.hideLoading()
-            util.handleCloudError(err, '保存失败')
-          })
-        }
-      }
-    })
+    wx.navigateTo({ url: '/pages/profile/editProfile/editProfile' })
   },
 
   // 修改密码

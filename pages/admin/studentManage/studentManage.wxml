@@ -111,6 +111,29 @@
           <text class="form-label">家庭状况</text>
           <textarea class="form-textarea" value="{{editForm.familyDesc}}" data-field="familyDesc" bindinput="onEditField" placeholder="描述家庭经济状况" />
         </view>
+        <view class="form-group">
+          <text class="form-label">空闲时间</text>
+          <input class="form-input" value="{{editForm.freeTime}}" data-field="freeTime" bindinput="onEditField" placeholder="如：周二周四晚上" />
+        </view>
+        <view class="form-group">
+          <text class="form-label">技能（顿号/逗号分隔）</text>
+          <input class="form-input" value="{{editForm.skills}}" data-field="skills" bindinput="onEditField" placeholder="如：Office办公软件、Photoshop" />
+        </view>
+        <view class="form-group">
+          <text class="form-label">期望岗位类型</text>
+          <checkbox-group data-field="preferredJobTypes" bindchange="onEditField">
+            <label class="checkbox-label"><checkbox value="校内" checked="{{editForm.preferredJobTypes.indexOf('校内') > -1}}" />校内</label>
+            <label class="checkbox-label"><checkbox value="校外" checked="{{editForm.preferredJobTypes.indexOf('校外') > -1}}" />校外</label>
+          </checkbox-group>
+        </view>
+        <view class="form-group">
+          <text class="form-label">课程时间</text>
+          <input class="form-input" value="{{editForm.courses}}" data-field="courses" bindinput="onEditField" placeholder="如：周一上午 高等数学" />
+        </view>
+        <view class="form-group">
+          <text class="form-label">经验</text>
+          <input class="form-input" value="{{editForm.experience}}" data-field="experience" bindinput="onEditField" placeholder="如：学生会干部经历" />
+        </view>
       </scroll-view>
       <view class="modal-footer">
         <button class="btn-cancel" bindtap="closeEditModal">取消</button>
