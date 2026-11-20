@@ -24,6 +24,8 @@ exports.main = async (event, context) => {
       return await getApplicationDetail(event)
     case 'review':
       return await reviewApplication(event)
+    case 'batchReview':
+      return await batchReviewApplication(event)
     case 'adminList':
       return await getAdminApplicationList(event)
     case 'cancel':
@@ -279,6 +281,47 @@ async function reviewApplication(event) {
   } catch (err) {
     console.error('reviewApplication error:', err)
     return error(500, '审核失败')
+  }
+}
+
+/**
+ * 批量审核申请（管理员）
+ */
+async function batchReviewApplication(event) {
+  try {
+    const userInfo = await verifyUser(event)
+    if (!userInfo || !verifyAdmin(userInfo)) return unauthorized('需要管理员权限')
+
+    const { applyIds = [], rejectReason = '' } = event
+    const reviewAction = event.reviewAction || event.action
+    if (!Array.isArray(applyIds) || applyIds.length === 0) return badRequest('请选择申请')
+    if (reviewAction !== 'approve' && reviewAction !== 'reject') return badRequest('操作类型错误')
+    if (reviewAction === 'reject' && (!rejectReason || !rejectReason.trim())) return badRequest('驳回时必须填写驳回理由')
+
+    const now = db.serverDate()
+    let processed = 0
+    for (const id of applyIds) {
+      try {
+        const rec = await db.collection('applications').doc(id).get()
+        if (!rec.data || rec.data.status !== 'pending') continue
+        await db.collection('applications').doc(id).update({
+          data: {
+            status: reviewAction === 'approve' ? 'approved' : 'rejected',
+            statusText: reviewAction === 'approve' ? '已通过' : '已驳回',
+            reviewTime: now,
+            reviewer: userInfo.name,
+            rejectReason: reviewAction === 'reject' ? rejectReason : ''
+          }
+        })
+        processed++
+      } catch (err) {
+        console.error('批量审核单项失败:', id, err.message)
+      }
+    }
+    return success({ processed, total: applyIds.length }, '已处理 ' + processed + ' 条')
+  } catch (err) {
+    console.error('batchReviewApplication error:', err)
+    return error(500, '批量审核失败')
   }
 }
 

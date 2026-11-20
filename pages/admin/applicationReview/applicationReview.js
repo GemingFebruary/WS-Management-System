@@ -11,7 +11,8 @@ Page({
       { label: '已驳回', value: 'rejected' }
     ],
     applicationList: [],
-    sortByTime: true
+    sortByTime: true,
+    selectedIds: []
   },
 
   onLoad() { this.loadApplicationList() },
@@ -49,7 +50,7 @@ Page({
             return tb > ta ? 1 : tb < ta ? -1 : 0
           })
         }
-        this.setData({ applicationList: list })
+        this.setData({ applicationList: list, selectedIds: [] })
       }
     } catch (err) {
       util.hideLoading()
@@ -106,6 +107,61 @@ Page({
             util.hideLoading()
             if (result.code === 200) { util.showSuccess('已驳回'); this.loadApplicationList() }
           } catch (err) { util.hideLoading(); util.handleCloudError(err, '审核失败') }
+        } else if (res.confirm) {
+          util.showError('请输入驳回原因')
+        }
+      }
+    })
+  },
+
+  // ---------- 批量审核 ----------
+  toggleSelect(e) {
+    const id = e.currentTarget.dataset.id
+    const cur = this.data.selectedIds.slice()
+    const i = cur.indexOf(id)
+    if (i > -1) cur.splice(i, 1); else cur.push(id)
+    this.setData({ selectedIds: cur })
+  },
+  selectAll() {
+    const ids = this.data.applicationList.filter(a => a.status === 'pending').map(a => a._id)
+    this.setData({ selectedIds: ids })
+  },
+  clearSelection() { this.setData({ selectedIds: [] }) },
+
+  async batchApprove() {
+    const ids = this.data.selectedIds
+    if (!ids.length) { util.showError('请先选择申请'); return }
+    wx.showModal({
+      title: '批量通过',
+      content: `确定通过选中的 ${ids.length} 条申请吗？`,
+      success: async (res) => {
+        if (!res.confirm) return
+        util.showLoading('处理中...')
+        try {
+          const result = await util.callApplications('batchReview', { applyIds: ids, reviewAction: 'approve' })
+          util.hideLoading()
+          if (result.code === 200) { util.showSuccess(result.message || '已完成'); this.setData({ selectedIds: [] }); this.loadApplicationList() }
+        } catch (err) { util.hideLoading(); util.handleCloudError(err, '批量审核失败') }
+      }
+    })
+  },
+
+  async batchReject() {
+    const ids = this.data.selectedIds
+    if (!ids.length) { util.showError('请先选择申请'); return }
+    wx.showModal({
+      title: '批量驳回',
+      content: '请输入统一的驳回原因',
+      editable: true,
+      placeholderText: '请输入驳回原因',
+      success: async (res) => {
+        if (res.confirm && res.content) {
+          util.showLoading('处理中...')
+          try {
+            const result = await util.callApplications('batchReview', { applyIds: ids, reviewAction: 'reject', rejectReason: res.content })
+            util.hideLoading()
+            if (result.code === 200) { util.showSuccess(result.message || '已驳回'); this.setData({ selectedIds: [] }); this.loadApplicationList() }
+          } catch (err) { util.hideLoading(); util.handleCloudError(err, '批量驳回失败') }
         } else if (res.confirm) {
           util.showError('请输入驳回原因')
         }

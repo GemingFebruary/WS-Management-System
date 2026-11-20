@@ -259,7 +259,8 @@ async function createJob(event) {
       contactPerson,
       contactPhone,
       contactEmail,
-      requiredSkills
+      requiredSkills,
+      jobCategory
     } = event
 
     if (!jobName || !department || !workTime || !salary) {
@@ -285,6 +286,7 @@ async function createJob(event) {
         contactPhone: contactPhone || '',
         contactEmail: contactEmail || '',
         requiredSkills: Array.isArray(requiredSkills) ? requiredSkills : [],
+        jobCategory: jobCategory || '',
         publishDate: now,
         createTime: now,
         updateTime: now,
@@ -336,7 +338,7 @@ async function updateJob(event) {
       'jobName', 'department', 'jobType', 'workTime', 'salary',
       'recruitNum', 'requirement', 'jobContent', 'requiredMajor',
       'requiredGrade', 'minGpa', 'contactPerson', 'contactPhone',
-      'contactEmail', 'requiredSkills', 'status'
+      'contactEmail', 'requiredSkills', 'jobCategory', 'status'
     ]
 
     const updateData = {}

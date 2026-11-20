@@ -5,10 +5,10 @@ Page({
     isEdit: false,
     jobId: '',
     saving: false,
-    options: { skills: [] },
+    options: { skills: [], jobCategories: [] },
     form: {
       jobName: '', department: '', jobType: '校内', recruitNum: 1, salary: 15,
-      workTime: '', requiredSkills: [], requiredMajor: '', requiredGrade: '', minGpa: 0,
+      workTime: '', jobCategory: '', requiredSkills: [], requiredMajor: '', requiredGrade: '', minGpa: 0,
       requirement: '', jobContent: '', contactPerson: '', contactPhone: '', contactEmail: '',
       status: 'recruiting'
     },
@@ -27,7 +27,7 @@ Page({
     try {
       const res = await util.callJobs('getOptions')
       if (res.code === 200 && res.data) {
-        this.setData({ 'options.skills': res.data.skills || [] })
+        this.setData({ 'options.skills': res.data.skills || [], 'options.jobCategories': res.data.jobCategories || [] })
       }
     } catch (e) { console.error(e) }
   },
@@ -58,7 +58,7 @@ Page({
   },
   onPicker(e) {
     const f = e.currentTarget.dataset.field
-    const map = { jobType: ['校内', '校外'], status: ['recruiting', 'full', 'closed'] }
+    const map = { jobType: ['校内', '校外'], status: ['recruiting', 'full', 'closed'], jobCategory: this.data.options.jobCategories }
     const list = map[f]
     if (!list) return
     this.setData({ ['form.' + f]: list[Number(e.detail.value)] || '' })

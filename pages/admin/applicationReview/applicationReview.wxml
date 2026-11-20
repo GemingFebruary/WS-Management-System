@@ -17,11 +17,21 @@
     </view>
   </view>
 
+  <!-- 批量操作栏 -->
+  <view class="batch-bar card" wx:if="{{applicationList.length}}">
+    <checkbox bindtap="selectAll">全选待审核</checkbox>
+    <text class="batch-count">已选 {{selectedIds.length}} 条</text>
+    <button class="btn-action btn-approve" bindtap="batchApprove">批量通过</button>
+    <button class="btn-action btn-reject" bindtap="batchReject">批量驳回</button>
+    <text class="batch-clear" bindtap="clearSelection" wx:if="{{selectedIds.length}}">取消选择</text>
+  </view>
+
   <!-- 申请列表 -->
   <view class="application-list">
     <block wx:for="{{applicationList}}" wx:key="_id">
       <view class="application-card card">
         <view class="app-header">
+          <checkbox wx:if="{{item.status === 'pending'}}" value="{{item._id}}" checked="{{selectedIds.indexOf(item._id) > -1}}" data-id="{{item._id}}" bindtap="toggleSelect" />
           <view class="student-info">
             <text class="student-name">{{item.studentName}}</text>
             <text class="student-id">{{item.studentId}}</text>

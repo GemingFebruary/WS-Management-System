@@ -15,6 +15,20 @@
   </view>
 
   <view class="card">
+    <view class="section-title">岗位分类（发布岗位时选择）</view>
+    <view class="tag-list">
+      <view class="tag" wx:for="{{jobCategories}}" wx:key="*this">
+        <text class="tag-text">{{item}}</text>
+        <text class="tag-del" data-name="{{item}}" bindtap="removeJobCategory">✕</text>
+      </view>
+    </view>
+    <view class="add-row">
+      <input class="form-input" value="{{newJobCategory}}" bindinput="onNewJobCategory" placeholder="输入新岗位分类" />
+      <button class="btn-add" bindtap="addJobCategory">添加</button>
+    </view>
+  </view>
+
+  <view class="card">
     <view class="section-title">学院选项</view>
     <view class="tag-list">
       <view class="tag" wx:for="{{colleges}}" wx:key="*this">

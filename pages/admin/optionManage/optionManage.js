@@ -3,8 +3,8 @@ const util = require('../../../utils/util.js')
 Page({
   data: {
     loading: false, saving: false,
-    colleges: [], majors: {}, skills: [],
-    newCollege: '', newMajor: '', newSkill: '',
+    colleges: [], majors: {}, skills: [], jobCategories: [],
+    newCollege: '', newMajor: '', newSkill: '', newJobCategory: '',
     activeCollege: ''
   },
   onLoad() { this.loadOptions() },
@@ -18,6 +18,7 @@ Page({
           colleges: d.colleges || [],
           majors: d.majors || {},
           skills: d.skills || [],
+          jobCategories: d.jobCategories || [],
           activeCollege: (d.colleges && d.colleges[0]) || ''
         })
       }
@@ -53,6 +54,17 @@ Page({
     const name = e.currentTarget.dataset.name
     this.setData({ skills: this.data.skills.filter(s => s !== name) })
   },
+  onNewJobCategory(e) { this.setData({ newJobCategory: e.detail.value }) },
+  addJobCategory() {
+    const v = this.data.newJobCategory.trim()
+    if (!v) return
+    if (this.data.jobCategories.includes(v)) { util.showError('分类已存在'); return }
+    this.setData({ jobCategories: this.data.jobCategories.concat([v]), newJobCategory: '' })
+  },
+  removeJobCategory(e) {
+    const name = e.currentTarget.dataset.name
+    this.setData({ jobCategories: this.data.jobCategories.filter(c => c !== name) })
+  },
   addMajor() {
     const v = this.data.newMajor.trim()
     const college = this.data.activeCollege
@@ -75,7 +87,8 @@ Page({
       const res = await util.callAdmin('updateOptions', {
         colleges: this.data.colleges,
         majors: this.data.majors,
-        skills: this.data.skills
+        skills: this.data.skills,
+        jobCategories: this.data.jobCategories
       })
       if (res.code === 200) util.showSuccess('保存成功')
       else util.showError(res.message || '保存失败')

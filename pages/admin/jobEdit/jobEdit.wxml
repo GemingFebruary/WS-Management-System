@@ -37,6 +37,13 @@
     </view>
 
     <view class="form-group">
+      <text class="form-label">岗位分类</text>
+      <picker data-field="jobCategory" bindchange="onPicker" range="{{options.jobCategories}}">
+        <view class="form-input">{{form.jobCategory || '请选择岗位分类'}} ▾</view>
+      </picker>
+    </view>
+
+    <view class="form-group">
       <text class="form-label">技能要求（多选，用于智能匹配）</text>
       <view class="tag-list" wx:if="{{form.requiredSkills.length}}">
         <view class="tag" wx:for="{{form.requiredSkills}}" wx:key="*this"><text class="tag-text">{{item}}</text></view>
