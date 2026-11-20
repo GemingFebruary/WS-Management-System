@@ -1,0 +1,102 @@
+<!--pages/admin/jobEdit/jobEdit.wxml-->
+<view class="container">
+  <view class="card">
+    <view class="form-row">
+      <view class="form-group half">
+        <text class="form-label">岗位名称 *</text>
+        <input class="form-input" value="{{form.jobName}}" data-field="jobName" bindinput="onField" placeholder="如：图书馆助理" />
+      </view>
+      <view class="form-group half">
+        <text class="form-label">所属部门 *</text>
+        <input class="form-input" value="{{form.department}}" data-field="department" bindinput="onField" placeholder="如：图书馆" />
+      </view>
+    </view>
+
+    <view class="form-row">
+      <view class="form-group half">
+        <text class="form-label">岗位类型</text>
+        <picker data-field="jobType" bindchange="onPicker" range="{{['校内','校外']}}">
+          <view class="form-input">{{form.jobType}} ▾</view>
+        </picker>
+      </view>
+      <view class="form-group half">
+        <text class="form-label">招聘人数</text>
+        <input class="form-input" type="number" value="{{form.recruitNum}}" data-field="recruitNum" bindinput="onNumber" />
+      </view>
+    </view>
+
+    <view class="form-row">
+      <view class="form-group half">
+        <text class="form-label">薪资（元/时）</text>
+        <input class="form-input" type="digit" value="{{form.salary}}" data-field="salary" bindinput="onNumber" />
+      </view>
+      <view class="form-group half">
+        <text class="form-label">工作时间 *</text>
+        <input class="form-input" value="{{form.workTime}}" data-field="workTime" bindinput="onField" placeholder="如：周一至周五 14:00-17:00" />
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">技能要求（多选，用于智能匹配）</text>
+      <view class="tag-list" wx:if="{{form.requiredSkills.length}}">
+        <view class="tag" wx:for="{{form.requiredSkills}}" wx:key="*this"><text class="tag-text">{{item}}</text></view>
+      </view>
+      <view class="add-btn" bindtap="openSkillPanel">+ 选择技能要求</view>
+    </view>
+
+    <view class="form-row">
+      <view class="form-group half">
+        <text class="form-label">专业要求</text>
+        <input class="form-input" value="{{form.requiredMajor}}" data-field="requiredMajor" bindinput="onField" placeholder="不限留空" />
+      </view>
+      <view class="form-group half">
+        <text class="form-label">年级要求</text>
+        <input class="form-input" value="{{form.requiredGrade}}" data-field="requiredGrade" bindinput="onField" placeholder="不限留空" />
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">最低绩点</text>
+      <input class="form-input" type="digit" value="{{form.minGpa}}" data-field="minGpa" bindinput="onNumber" />
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">岗位要求</text>
+      <textarea class="form-textarea" value="{{form.requirement}}" data-field="requirement" bindinput="onField" placeholder="填写岗位要求" />
+    </view>
+    <view class="form-group">
+      <text class="form-label">工作内容</text>
+      <textarea class="form-textarea" value="{{form.jobContent}}" data-field="jobContent" bindinput="onField" placeholder="填写工作内容" />
+    </view>
+
+    <view class="form-row">
+      <view class="form-group half">
+        <text class="form-label">联系人</text>
+        <input class="form-input" value="{{form.contactPerson}}" data-field="contactPerson" bindinput="onField" />
+      </view>
+      <view class="form-group half">
+        <text class="form-label">联系电话</text>
+        <input class="form-input" value="{{form.contactPhone}}" data-field="contactPhone" bindinput="onField" />
+      </view>
+    </view>
+    <view class="form-group">
+      <text class="form-label">联系邮箱</text>
+      <input class="form-input" value="{{form.contactEmail}}" data-field="contactEmail" bindinput="onField" />
+    </view>
+
+    <view class="form-group" wx:if="{{isEdit}}">
+      <text class="form-label">状态</text>
+      <picker data-field="status" bindchange="onPicker" range="{{['recruiting','full','closed']}}">
+        <view class="form-input">{{form.status === 'recruiting' ? '招聘中' : form.status === 'full' ? '已满员' : '已关闭'}} ▾</view>
+      </picker>
+    </view>
+  </view>
+
+  <button class="btn-primary save-btn" bindtap="save" disabled="{{saving}}">{{saving ? '保存中...' : (isEdit ? '保存' : '发布')}}</button>
+
+  <bottom-panel show="{{panelSkill}}" title="选择技能要求（可多选）" bindclose="closeSkill">
+    <view class="tag-list">
+      <view class="skill-tag {{form.requiredSkills.indexOf(item) > -1 ? 'active' : ''}}" wx:for="{{options.skills}}" wx:key="*this" data-name="{{item}}" bindtap="toggleSkill">{{item}}</view>
+    </view>
+  </bottom-panel>
+</view>

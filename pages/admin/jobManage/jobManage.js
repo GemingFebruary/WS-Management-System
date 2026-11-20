@@ -76,36 +76,15 @@ Page({
     this.loadJobList()
   },
 
-  // 打开创建弹窗
+  // 打开发布页（独立页面）
   openCreate() {
-    this.setData({
-      isEdit: false, showEditModal: true,
-      jobForm: {
-        jobId: '', jobName: '', department: '', jobType: '校内', workTime: '',
-        salary: 15, recruitNum: 1, requirement: '', jobContent: '',
-        requiredMajor: '', requiredGrade: '', minGpa: 0,
-        contactPerson: '', contactPhone: '', contactEmail: ''
-      }
-    })
+    wx.navigateTo({ url: '/pages/admin/jobEdit/jobEdit' })
   },
 
-  // 打开编辑弹窗
+  // 打开编辑页（独立页面）
   openEdit(e) {
     const id = e.currentTarget.dataset.id
-    const job = this.data.jobList.find(j => j.jobId === id || j._id === id)
-    if (!job) return
-    this.setData({
-      isEdit: true, showEditModal: true,
-      jobForm: {
-        jobId: job.jobId || '', jobName: job.jobName || '', department: job.department || '',
-        jobType: job.jobType || '校内', workTime: job.workTime || '', salary: job.salary || 15,
-        recruitNum: job.recruitNum || 1, requirement: job.requirement || '',
-        jobContent: job.jobContent || '', requiredMajor: job.requiredMajor || '',
-        requiredGrade: job.requiredGrade || '', minGpa: job.minGpa || 0,
-        contactPerson: job.contactPerson || '', contactPhone: job.contactPhone || '',
-        contactEmail: job.contactEmail || ''
-      }
-    })
+    wx.navigateTo({ url: '/pages/admin/jobEdit/jobEdit?jobId=' + id })
   },
 
   onFormField(e) {

@@ -1,0 +1,117 @@
+<!--pages/profile/editProfile/editProfile.wxml-->
+<view class="container">
+  <view class="card form-card">
+    <view class="form-row">
+      <form-input custom-class="half" label="姓名" value="{{form.name}}" field="name" placeholder="请输入姓名" bindinput="onField" />
+      <view class="form-group half">
+        <text class="form-label">性别</text>
+        <picker data-field="gender" bindchange="onPicker" range="{{genderList}}">
+          <view class="form-input">{{form.gender}} ▾</view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="form-row">
+      <view class="form-group half" bindtap="openCollegePanel">
+        <text class="form-label">学院</text>
+        <view class="form-input">{{form.college || '请选择学院'}} ▾</view>
+      </view>
+      <view class="form-group half" bindtap="openMajorPanel">
+        <text class="form-label">专业</text>
+        <view class="form-input">{{form.major || '请选择专业'}} ▾</view>
+      </view>
+    </view>
+
+    <view class="form-row">
+      <view class="form-group half">
+        <text class="form-label">年级</text>
+        <picker data-field="grade" bindchange="onPicker" range="{{gradeList}}">
+          <view class="form-input">{{form.grade || '请选择'}} ▾</view>
+        </picker>
+      </view>
+      <form-input custom-class="half" label="绩点" value="{{form.gpa}}" field="gpa" type="digit" placeholder="0-4" bindinput="onField" />
+    </view>
+
+    <view class="form-row">
+      <form-input custom-class="half" label="手机号" value="{{form.phone}}" field="phone" type="number" placeholder="请输入手机号" bindinput="onField" />
+      <form-input custom-class="half" label="邮箱" value="{{form.email}}" field="email" placeholder="选填" bindinput="onField" />
+    </view>
+
+    <!-- 空闲时间 -->
+    <view class="form-group">
+      <text class="form-label">空闲时间（可添加多段）</text>
+      <view class="tag-list" wx:if="{{freeTimeList.length}}">
+        <view class="tag" wx:for="{{freeTimeList}}" wx:key="*this">
+          <text class="tag-text">{{item}}</text>
+          <text class="tag-del" data-index="{{index}}" bindtap="removeFreeTime">✕</text>
+        </view>
+      </view>
+      <view class="add-btn" bindtap="openTimePanel">+ 添加空闲时间</view>
+    </view>
+
+    <!-- 技能 -->
+    <view class="form-group">
+      <text class="form-label">技能（从选项中多选）</text>
+      <view class="tag-list" wx:if="{{selectedSkills.length}}">
+        <view class="tag" wx:for="{{selectedSkills}}" wx:key="*this"><text class="tag-text">{{item}}</text></view>
+      </view>
+      <view class="add-btn" bindtap="openSkillPanel">+ 选择技能</view>
+    </view>
+
+    <form-input label="课程时间" value="{{form.courses}}" field="courses" placeholder="如：周一上午 高等数学" bindinput="onField" />
+
+    <view class="form-group">
+      <text class="form-label">家庭类型</text>
+      <picker data-field="familyType" bindchange="onPicker" range="{{familyTypeList}}">
+        <view class="form-input">{{form.familyType}} ▾</view>
+      </picker>
+    </view>
+
+    <view class="form-group">
+      <text class="form-label">家庭情况</text>
+      <textarea class="form-textarea" value="{{form.familyDesc}}" data-field="familyDesc" bindinput="onField" placeholder="选填，用于资助评定" />
+    </view>
+  </view>
+
+  <button class="btn-primary save-btn" bindtap="save" disabled="{{saving}}">{{saving ? '保存中...' : '保存'}}</button>
+  <view class="tip-text">正在编辑学生：{{userId}}（内容与学生端编辑资料一致）</view>
+
+  <!-- 学院选择 -->
+  <bottom-panel show="{{panelCollege}}" title="选择学院" showFooter="{{false}}" bindclose="closePanels">
+    <view class="option-list">
+      <view class="option-item" wx:for="{{options.colleges}}" wx:key="*this" data-name="{{item}}" bindtap="selectCollege">{{item}}</view>
+    </view>
+  </bottom-panel>
+
+  <!-- 专业选择 -->
+  <bottom-panel show="{{panelMajor}}" title="选择专业" showFooter="{{false}}" bindclose="closePanels">
+    <view class="option-list">
+      <view class="option-item" wx:for="{{options.majors[form.college]}}" wx:key="*this" data-name="{{item}}" bindtap="selectMajor">{{item}}</view>
+      <view class="option-empty" wx:if="{{!(options.majors[form.college] && options.majors[form.college].length)}}">该学院暂无专业选项</view>
+    </view>
+  </bottom-panel>
+
+  <!-- 技能多选 -->
+  <bottom-panel show="{{panelSkill}}" title="选择技能（可多选）" bindclose="closePanels" bindconfirm="confirmSkill">
+    <view class="tag-list">
+      <view class="skill-tag {{selectedSkills.indexOf(item) > -1 ? 'active' : ''}}" wx:for="{{options.skills}}" wx:key="*this" data-name="{{item}}" bindtap="toggleSkill">{{item}}</view>
+    </view>
+  </bottom-panel>
+
+  <!-- 空闲时间添加 -->
+  <bottom-panel show="{{panelTime}}" title="添加空闲时间" bindclose="closePanels" bindconfirm="confirmTime">
+    <view class="time-row">
+      <text class="time-label">适用日</text>
+      <checkbox-group class="day-group" bindchange="onDayChange">
+        <label class="day-label" wx:for="{{weekDays}}" wx:key="*this"><checkbox value="{{item}}" checked="{{timeDays.indexOf(item) > -1}}" />{{item}}</label>
+      </checkbox-group>
+    </view>
+    <view class="time-row">
+      <text class="time-label">开始</text>
+      <picker mode="time" value="{{timeStart}}" bindchange="onStartChange"><view class="time-picker">{{timeStart}}</view></picker>
+      <text class="time-label">结束</text>
+      <picker mode="time" value="{{timeEnd}}" bindchange="onEndChange"><view class="time-picker">{{timeEnd}}</view></picker>
+    </view>
+    <view class="time-tip">选择适用日与时间段，点击"确定"添加；可重复添加多段</view>
+  </bottom-panel>
+</view>

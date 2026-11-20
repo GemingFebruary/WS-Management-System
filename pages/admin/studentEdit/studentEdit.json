@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "编辑学生资料",
+  "usingComponents": {
+    "form-input": "/components/form-input/form-input",
+    "bottom-panel": "/components/bottom-panel/bottom-panel"
+  }
+}

@@ -62,9 +62,11 @@ Page({
   },
   doSearch() { this.setData({ pageNum: 1 }, () => this.loadStudents()) },
 
-  // 打开编辑弹窗
+  // 打开编辑页（独立页面）
   openEdit(e) {
     const id = e.currentTarget.dataset.id
+    wx.navigateTo({ url: '/pages/admin/studentEdit/studentEdit?userId=' + id })
+    return
     const s = this.data.studentList.find(st => st.userId === id)
     if (!s) return
     this.setData({

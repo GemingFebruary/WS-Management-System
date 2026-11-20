@@ -57,11 +57,9 @@ Page({
     })
   },
 
-  // 添加岗位
+  // 发布新岗位（独立页面）
   addJob() {
-    wx.navigateTo({
-      url: '/pages/admin/jobManage/jobManage?mode=add'
-    })
+    wx.navigateTo({ url: '/pages/admin/jobEdit/jobEdit' })
   },
 
   // 查看全部申请

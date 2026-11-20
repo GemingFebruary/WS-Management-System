@@ -28,7 +28,8 @@ Page({
       userRole: userRole
     })
 
-    if (isLogin) {
+    // 仅学生加载学生统计（管理员访问个人中心时避免调用学生接口报 401）
+    if (isLogin && userRole === 'student') {
       this.loadUserStats()
     }
   },

@@ -18,7 +18,9 @@
     "pages/admin/salaryManage/salaryManage",
     "pages/admin/matchSettings/matchSettings",
     "pages/profile/editProfile/editProfile",
-    "pages/admin/optionManage/optionManage"
+    "pages/admin/optionManage/optionManage",
+    "pages/admin/jobEdit/jobEdit",
+    "pages/admin/studentEdit/studentEdit"
   ],
   "window": {
     "backgroundTextStyle": "light",
