@@ -4,6 +4,7 @@
   "onReachBottomDistance": 200,
   "usingComponents": {
     "empty-state": "/components/empty-state/empty-state",
-    "match-score": "/components/match-score/match-score"
+    "match-score": "/components/match-score/match-score",
+    "toast": "/components/toast/toast"
   }
 }

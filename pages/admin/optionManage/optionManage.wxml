@@ -47,3 +47,4 @@
 
   <button class="btn-primary save-btn" bindtap="save" disabled="{{saving}}">{{saving ? '保存中...' : '保存选项库'}}</button>
 </view>
+<toast id="globalToast" />

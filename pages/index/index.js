@@ -182,10 +182,10 @@ Page({
           if (result.code === 200) {
             wx.showModal({ title: '初始化成功', content: '数据库集合、索引、管理员账号已创建', showCancel: false })
           } else {
-            wx.showToast({ title: result.message || '失败', icon: 'none' })
+            util.showError(result.message || '失败')
           }
         } catch (err) {
-          wx.showToast({ title: '调用云函数失败', icon: 'none' })
+          util.showError('调用云函数失败')
         } finally {
           this.setData({ initProcessing: false, initStepText: '' })
         }
@@ -213,10 +213,10 @@ Page({
             this.loadRecommendJobs()
             this.loadNotices()
           } else {
-            wx.showToast({ title: result.message || '失败', icon: 'none' })
+            util.showError(result.message || '失败')
           }
         } catch (err) {
-          wx.showToast({ title: '调用云函数失败', icon: 'none' })
+          util.showError('调用云函数失败')
         } finally {
           this.setData({ initProcessing: false, initStepText: '' })
         }
@@ -242,10 +242,10 @@ Page({
               showCancel: false
             })
           } else {
-            wx.showToast({ title: result.message || '失败', icon: 'none' })
+            util.showError(result.message || '失败')
           }
         } catch (err) {
-          wx.showToast({ title: '调用云函数失败', icon: 'none' })
+          util.showError('调用云函数失败')
         } finally {
           this.setData({ initProcessing: false, initStepText: '' })
         }

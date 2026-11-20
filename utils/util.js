@@ -48,23 +48,38 @@ const hideLoading = () => {
 /**
  * 显示成功提示
  */
-const showSuccess = (title = '操作成功') => {
+/**
+ * 全局提示：优先使用当前页面的 toast 组件（统一视觉），回退原生 wx.showToast
+ */
+const showToast = (message, type = 'info', duration = 2000) => {
+  try {
+    const pages = getCurrentPages()
+    const cur = pages[pages.length - 1]
+    const t = cur && cur.selectComponent ? cur.selectComponent('#globalToast') : null
+    if (t && t.show) {
+      t.show(message, type, duration)
+      return
+    }
+  } catch (e) {}
   wx.showToast({
-    title: title,
-    icon: 'success',
-    duration: 2000
+    title: String(message).slice(0, 70),
+    icon: type === 'success' ? 'success' : 'none',
+    duration
   })
+}
+
+/**
+ * 显示成功提示
+ */
+const showSuccess = (title = '操作成功') => {
+  showToast(title, 'success')
 }
 
 /**
  * 显示错误提示
  */
 const showError = (title = '操作失败') => {
-  wx.showToast({
-    title: title,
-    icon: 'none',
-    duration: 2000
-  })
+  showToast(title, 'error')
 }
 
 
@@ -278,6 +293,7 @@ module.exports = {
   formatNumber,
   showLoading,
   hideLoading,
+  showToast,
   showSuccess,
   showError,
   callCloudFunction,

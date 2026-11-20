@@ -2,6 +2,7 @@
   "navigationBarTitleText": "学生管理",
   "usingComponents": {
     "modal": "/components/modal/modal",
-    "pagination": "/components/pagination/pagination"
+    "pagination": "/components/pagination/pagination",
+    "toast": "/components/toast/toast"
   }
 }

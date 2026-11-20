@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "岗位编辑",
   "usingComponents": {
-    "bottom-panel": "/components/bottom-panel/bottom-panel"
+    "bottom-panel": "/components/bottom-panel/bottom-panel",
+    "toast": "/components/toast/toast"
   }
 }

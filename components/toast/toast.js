@@ -16,5 +16,15 @@ Component({
         }, this.data.duration)
       }
     }
+  },
+  methods: {
+    // 供全局调度调用
+    show(message, type = 'info', duration = 2000) {
+      this.setData({ show: true, message: String(message), type, duration })
+    },
+    hide() {
+      clearTimeout(this._timer)
+      this.setData({ show: false })
+    }
   }
 })

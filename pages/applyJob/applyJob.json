@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "岗位申请",
-  "usingComponents": {}
+  "usingComponents": {
+    "toast": "/components/toast/toast"
+  }
 }

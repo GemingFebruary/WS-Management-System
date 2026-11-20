@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "公告管理",
-  "usingComponents": {}
+  "usingComponents": {
+    "toast": "/components/toast/toast"
+  }
 }

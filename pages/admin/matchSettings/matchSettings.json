@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "匹配权重配置",
-  "usingComponents": {}
+  "usingComponents": {
+    "toast": "/components/toast/toast"
+  }
 }

@@ -47,3 +47,4 @@
   <pagination current="{{pageNum}}" pageSize="{{pageSize}}" total="{{total}}" bindchange="onPageChange" />
 
 </view>
+<toast id="globalToast" />

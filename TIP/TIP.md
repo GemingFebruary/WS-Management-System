@@ -287,4 +287,14 @@
 - `applyJob.js`：删除未使用的 `clearFieldError`。
 - 校验：`node --check` 通过；全项目扫描确认无残留引用（云函数 `validator.js` 的同名函数为独立实现，不受影响）。
 
+---
+
+## 三十、统一 toast 提示（2026-11-20）
+
+- `components/toast` 暴露命令式 `show(message, type, duration)` / `hide()`。
+- `utils/util.js` 新增全局 `showToast`：优先调用当前页面 `<toast id="globalToast">` 组件（统一视觉），无组件时回退原生 `wx.showToast`；`showSuccess`/`showError` 改走该通道。
+- 全部 21 个页面注册 `toast` 组件并挂载 `<toast id="globalToast" />`。
+- 33 处原生 `wx.showToast` 收敛为 `util.showSuccess` / `util.showError` / `util.showToast`。
+- 自测：组件与调度层 4/4 通过（组件渲染、成功/失败类型、原生回退）。
+
 *文档维护说明: 后续所有开发文档、开发日志均在 TIP/ 文件夹内生成/修改。*

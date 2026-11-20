@@ -64,3 +64,4 @@
     </empty-state>
   </view>
 </view>
+<toast id="globalToast" />

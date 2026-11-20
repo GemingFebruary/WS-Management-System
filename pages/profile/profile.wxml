@@ -119,3 +119,4 @@
     <text class="tip-text">查看岗位、提交申请、查询薪资</text>
   </view>
 </view>
+<toast id="globalToast" />

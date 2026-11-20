@@ -105,7 +105,7 @@ Page({
 
   // 系统设置
   systemSettings() {
-    wx.showToast({ title: '系统设置功能即将上线', icon: 'none' })
+    util.showToast('系统设置功能即将上线', 'info')
   },
 
   // 选项库管理

@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "管理后台",
-  "usingComponents": {}
+  "usingComponents": {
+    "toast": "/components/toast/toast"
+  }
 }

@@ -1,6 +1,7 @@
 {
   "usingComponents": {
     "modal": "/components/modal/modal",
-    "match-score": "/components/match-score/match-score"
+    "match-score": "/components/match-score/match-score",
+    "toast": "/components/toast/toast"
   }
 }

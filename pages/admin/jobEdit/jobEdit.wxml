@@ -100,3 +100,4 @@
     </view>
   </bottom-panel>
 </view>
+<toast id="globalToast" />

@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "申请审核",
-  "usingComponents": {}
+  "usingComponents": {
+    "toast": "/components/toast/toast"
+  }
 }

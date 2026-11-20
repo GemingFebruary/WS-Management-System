@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "岗位管理",
-  "usingComponents": {}
+  "usingComponents": {
+    "toast": "/components/toast/toast"
+  }
 }

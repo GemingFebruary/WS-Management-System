@@ -44,3 +44,4 @@
   </view>
 
 </view>
+<toast id="globalToast" />

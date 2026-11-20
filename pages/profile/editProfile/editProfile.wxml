@@ -115,3 +115,4 @@
     <view class="time-tip">选择适用日与时间段，点击"确定"添加；可重复添加多段</view>
   </bottom-panel>
 </view>
+<toast id="globalToast" />

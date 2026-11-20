@@ -60,10 +60,7 @@ Page({
     if (!util.checkLogin()) return
 
     if (this.data.hasApplied) {
-      wx.showToast({
-        title: '您已申请过该岗位',
-        icon: 'none'
-      })
+      util.showToast('您已申请过该岗位', 'info')
       return
     }
 

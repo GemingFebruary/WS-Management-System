@@ -14,3 +14,4 @@
     <empty-state show="{{noticeList.length === 0 && !loading}}" text="暂无公告" />
   </view>
 </view>
+<toast id="globalToast" />

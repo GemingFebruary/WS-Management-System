@@ -1,3 +1,4 @@
+const util = require('../../../utils/util.js')
 // pages/admin/matchSettings/matchSettings.js
 Page({
   data: {
@@ -26,7 +27,7 @@ Page({
       }
     } catch (err) {
       console.error('加载匹配权重失败:', err)
-      wx.showToast({ title: '加载失败', icon: 'none' })
+      util.showError('加载失败')
     } finally {
       this.setData({ loading: false })
     }
@@ -42,7 +43,7 @@ Page({
     const w = this.data.weights
     const total = (Number(w.skill) || 0) + (Number(w.time) || 0) + (Number(w.preference) || 0) + (Number(w.conflict) || 0)
     if (total <= 0) {
-      wx.showToast({ title: '权重总和需大于 0', icon: 'none' })
+      util.showToast('权重总和需大于 0', 'info')
       return
     }
     this.setData({ saving: true })
@@ -50,13 +51,13 @@ Page({
       const res = await wx.cloud.callFunction({ name: 'jobs', data: { action: 'updateMatchConfig', weights: w } })
       const r = res.result || {}
       if (r.code === 200) {
-        wx.showToast({ title: '保存成功', icon: 'success' })
+        util.showSuccess('保存成功')
       } else {
-        wx.showToast({ title: r.message || '保存失败', icon: 'none' })
+        util.showError(r.message || '保存失败')
       }
     } catch (err) {
       console.error('保存匹配权重失败:', err)
-      wx.showToast({ title: '保存失败', icon: 'none' })
+      util.showError('保存失败')
     } finally {
       this.setData({ saving: false })
     }

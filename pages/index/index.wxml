@@ -159,3 +159,4 @@
     <view class="notice-detail-meta">{{selectedNotice.date}}</view>
   </modal>
 </view>
+<toast id="globalToast" />

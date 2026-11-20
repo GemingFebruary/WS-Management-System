@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "选项库管理",
-  "usingComponents": {}
+  "usingComponents": {
+    "toast": "/components/toast/toast"
+  }
 }

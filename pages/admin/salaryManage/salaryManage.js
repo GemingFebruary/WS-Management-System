@@ -138,7 +138,7 @@ Page({
   async submitRecord() {
     const f = this.data.recordForm
     if (!f.studentId || !f.jobId || !f.workDate) {
-      wx.showToast({ title: '请填写必填项', icon: 'none' })
+      util.showToast('请填写必填项', 'info')
       return
     }
     try {
@@ -152,14 +152,14 @@ Page({
       })
       if (res && res.code === 200) {
         this.setData({ showRecordModal: false })
-        wx.showToast({ title: '录入成功', icon: 'success' })
+        util.showSuccess('录入成功')
         this.loadSalaryList()
         this.loadSummary()
       } else {
-        wx.showToast({ title: res.message || '录入失败', icon: 'none' })
+        util.showError(res.message || '录入失败')
       }
     } catch (err) {
-      wx.showToast({ title: '录入失败', icon: 'none' })
+      util.showError('录入失败')
     }
   },
 
@@ -199,14 +199,14 @@ Page({
       })
       if (res && res.code === 200) {
         this.setData({ showEditModal: false })
-        wx.showToast({ title: '更新成功', icon: 'success' })
+        util.showSuccess('更新成功')
         this.loadSalaryList()
         this.loadSummary()
       } else {
-        wx.showToast({ title: res.message || '更新失败', icon: 'none' })
+        util.showError(res.message || '更新失败')
       }
     } catch (err) {
-      wx.showToast({ title: '更新失败', icon: 'none' })
+      util.showError('更新失败')
     }
   },
 
@@ -224,14 +224,14 @@ Page({
       const res = await util.callSalary('delete', { recordId: target._id || target.recordId })
       if (res && res.code === 200) {
         this.setData({ showDeleteModal: false, deleteTarget: null })
-        wx.showToast({ title: '删除成功', icon: 'success' })
+        util.showSuccess('删除成功')
         this.loadSalaryList()
         this.loadSummary()
       } else {
-        wx.showToast({ title: res.message || '删除失败', icon: 'none' })
+        util.showError(res.message || '删除失败')
       }
     } catch (err) {
-      wx.showToast({ title: '删除失败', icon: 'none' })
+      util.showError('删除失败')
     }
   },
 
@@ -249,14 +249,14 @@ Page({
       const res = await util.callSalary('adminPay', { recordIds: [target._id || target.recordId] })
       if (res && res.code === 200) {
         this.setData({ showPayModal: false, payTarget: null })
-        wx.showToast({ title: '发放成功', icon: 'success' })
+        util.showSuccess('发放成功')
         this.loadSalaryList()
         this.loadSummary()
       } else {
-        wx.showToast({ title: res.message || '发放失败', icon: 'none' })
+        util.showError(res.message || '发放失败')
       }
     } catch (err) {
-      wx.showToast({ title: '发放失败', icon: 'none' })
+      util.showError('发放失败')
     }
   },
 
@@ -281,7 +281,7 @@ Page({
   // 批量发放
   async doBatchPay() {
     if (this.data.selectedIds.length === 0) {
-      wx.showToast({ title: '请先选择记录', icon: 'none' })
+      util.showToast('请先选择记录', 'info')
       return
     }
     wx.showModal({
@@ -293,14 +293,14 @@ Page({
           const result = await util.callSalary('adminPay', { recordIds: this.data.selectedIds })
           if (result && result.code === 200) {
             this.setData({ selectedIds: [], selectAll: false })
-            wx.showToast({ title: '发放成功', icon: 'success' })
+            util.showSuccess('发放成功')
             this.loadSalaryList()
             this.loadSummary()
           } else {
-            wx.showToast({ title: result.message || '发放失败', icon: 'none' })
+            util.showError(result.message || '发放失败')
           }
         } catch (err) {
-          wx.showToast({ title: '发放失败', icon: 'none' })
+          util.showError('发放失败')
         }
       }
     })
@@ -316,14 +316,14 @@ Page({
         try {
           const result = await util.callSalary('adminPay', { month: this.data.currentMonth })
           if (result && result.code === 200) {
-            wx.showToast({ title: '发放成功', icon: 'success' })
+            util.showSuccess('发放成功')
             this.loadSalaryList()
             this.loadSummary()
           } else {
-            wx.showToast({ title: result.message || '发放失败', icon: 'none' })
+            util.showError(result.message || '发放失败')
           }
         } catch (err) {
-          wx.showToast({ title: '发放失败', icon: 'none' })
+          util.showError('发放失败')
         }
       }
     })
