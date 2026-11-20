@@ -6,6 +6,9 @@ Page({
     studentList: [],
     loading: false,
     searchKeyword: '',
+    pageNum: 1,
+    pageSize: 20,
+    total: 0,
     // 编辑弹窗
     showEditModal: false,
     editTargetId: '',
@@ -31,12 +34,12 @@ Page({
   async loadStudents() {
     this.setData({ loading: true })
     try {
-      const params = { pageNum: 1, pageSize: 100 }
+      const params = { pageNum: this.data.pageNum, pageSize: this.data.pageSize }
       if (this.data.searchKeyword) params.keyword = this.data.searchKeyword
       const result = await util.callAdmin('studentList', params)
       if (result.code === 200) {
         const list = result.data.list || []
-        this.setData({ studentList: list, loading: false })
+        this.setData({ studentList: list, total: result.data.total || 0, loading: false })
         // 自动打开从申请页面跳转过来的学生
         if (this._pendingStudentId) {
           const target = list.find(s => s.studentId === this._pendingStudentId || s.userId === this._pendingStudentId)
@@ -53,7 +56,11 @@ Page({
   },
 
   onSearchInput(e) { this.setData({ searchKeyword: e.detail.value }) },
-  doSearch() { this.loadStudents() },
+  onPageChange(e) {
+    if (e.detail.pageNum === this.data.pageNum) return
+    this.setData({ pageNum: e.detail.pageNum }, () => this.loadStudents())
+  },
+  doSearch() { this.setData({ pageNum: 1 }, () => this.loadStudents()) },
 
   // 打开编辑弹窗
   openEdit(e) {

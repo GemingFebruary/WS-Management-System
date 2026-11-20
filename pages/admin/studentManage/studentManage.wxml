@@ -43,6 +43,9 @@
     </view>
   </view>
 
+  <!-- 分页 -->
+  <pagination current="{{pageNum}}" pageSize="{{pageSize}}" total="{{total}}" bindchange="onPageChange" />
+
   <!-- 编辑弹窗 -->
   <modal show="{{showEditModal}}" title="编辑学生信息" bindclose="closeEditModal" bindcancel="closeEditModal" bindconfirm="saveEdit">
     <scroll-view class="modal-body" scroll-y>

@@ -55,7 +55,8 @@ Page({
   },
 
   onField(e) {
-    const field = e.currentTarget.dataset.field
+    const field = (e.detail && e.detail.field) || e.currentTarget.dataset.field
+    if (!field) return
     this.setData({ ['form.' + field]: e.detail.value })
   },
 
