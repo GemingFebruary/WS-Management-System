@@ -2,5 +2,7 @@
   "navigationBarTitleText": "岗位列表",
   "enablePullDownRefresh": true,
   "onReachBottomDistance": 200,
-  "usingComponents": {}
+  "usingComponents": {
+    "empty-state": "/components/empty-state/empty-state"
+  }
 }

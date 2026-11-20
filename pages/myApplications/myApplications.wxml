@@ -59,10 +59,8 @@
     </block>
 
     <!-- 空状态 -->
-    <view class="empty-state" wx:if="{{applicationList.length === 0 && !loading}}">
-      <image class="empty-icon" src="/images/icon/empty-box.png" mode="aspectFit"></image>
-      <text class="empty-text">暂无申请记录</text>
+    <empty-state show="{{applicationList.length === 0 && !loading}}" text="暂无申请记录">
       <button class="btn-go-apply btn-primary" bindtap="goToJobList">去申请岗位</button>
-    </view>
+    </empty-state>
   </view>
 </view>

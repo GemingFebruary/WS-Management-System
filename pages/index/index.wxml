@@ -155,16 +155,8 @@
   </view>
 
   <!-- 公告详情弹窗 -->
-  <view wx:if="{{showNoticeDetail}}" class="modal-overlay" bindtap="closeNotice">
-    <view class="modal-box" catchtap="">
-      <view class="modal-header">
-        <text class="modal-title">{{selectedNotice.title}}</text>
-        <text class="modal-close" bindtap="closeNotice">✕</text>
-      </view>
-      <scroll-view class="modal-body" scroll-y>
-        <text class="notice-detail-content">{{selectedNotice.content}}</text>
-        <view class="notice-detail-meta">{{selectedNotice.date}}</view>
-      </scroll-view>
-    </view>
-  </view>
+  <modal show="{{showNoticeDetail}}" title="{{selectedNotice.title}}" showCancel="{{false}}" bindclose="closeNotice">
+    <text class="notice-detail-content">{{selectedNotice.content}}</text>
+    <view class="notice-detail-meta">{{selectedNotice.date}}</view>
+  </modal>
 </view>

@@ -1,0 +1,6 @@
+<!--components/form-input/form-input.wxml-->
+<view class="form-group">
+  <text class="form-label" wx:if="{{label}}">{{label}}<text class="required" wx:if="{{required}}"> *</text></text>
+  <input class="form-input {{error ? 'has-error' : ''}}" type="{{type}}" value="{{value}}" placeholder="{{placeholder}}" disabled="{{disabled}}" data-field="{{field}}" bindinput="onInput" />
+  <text class="form-error" wx:if="{{error}}">{{error}}</text>
+</view>

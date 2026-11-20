@@ -1,0 +1,6 @@
+<!--components/pagination/pagination.wxml-->
+<view class="pagination" wx:if="{{total > 0}}">
+  <button class="page-btn" disabled="{{current <= 1}}" bindtap="prev">上一页</button>
+  <text class="page-info">{{current}} / {{totalPages}}</text>
+  <button class="page-btn" disabled="{{current >= totalPages}}" bindtap="next">下一页</button>
+</view>

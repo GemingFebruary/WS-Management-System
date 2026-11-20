@@ -88,10 +88,7 @@
     </block>
 
     <!-- 空状态 -->
-    <view class="empty-state" wx:if="{{jobList.length === 0 && !loading}}">
-      <image class="empty-icon" src="/images/icon/empty-box.png" mode="aspectFit"></image>
-      <text class="empty-text">暂无岗位信息</text>
-    </view>
+    <empty-state show="{{jobList.length === 0 && !loading}}" text="暂无岗位信息" />
 
     <!-- 加载更多 -->
     <view class="load-more" wx:if="{{hasMore}}">

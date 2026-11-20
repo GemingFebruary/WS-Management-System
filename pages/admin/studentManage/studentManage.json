@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "学生管理",
-  "usingComponents": {}
+  "usingComponents": {
+    "modal": "/components/modal/modal"
+  }
 }

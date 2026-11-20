@@ -1,0 +1,14 @@
+<!--components/modal/modal.wxml-->
+<view class="modal-overlay" wx:if="{{show}}" bindtap="onOverlay">
+  <view class="modal-box" catchtap="">
+    <view class="modal-header">
+      <text class="modal-title">{{title}}</text>
+      <text class="modal-close" bindtap="onClose">✕</text>
+    </view>
+    <scroll-view class="modal-body" scroll-y><slot></slot></scroll-view>
+    <view class="modal-footer">
+      <button class="btn-cancel" wx:if="{{showCancel}}" bindtap="onCancel">{{cancelText}}</button>
+      <button class="btn-confirm" bindtap="onConfirm">{{confirmText}}</button>
+    </view>
+  </view>
+</view>

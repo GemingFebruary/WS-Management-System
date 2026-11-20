@@ -1,0 +1,5 @@
+/* components/pagination/pagination.wxss */
+.pagination { display: flex; align-items: center; justify-content: center; padding: 24rpx 0; gap: 24rpx; }
+.page-btn { min-width: 140rpx; height: 64rpx; line-height: 64rpx; font-size: 26rpx; color: var(--color-primary); background: var(--color-primary-light); border-radius: var(--radius-sm); padding: 0 24rpx; }
+.page-btn[disabled] { color: var(--color-text-hint); background: var(--color-bg); }
+.page-info { font-size: 26rpx; color: var(--color-text-secondary); }

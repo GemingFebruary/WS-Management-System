@@ -44,13 +44,8 @@
   </view>
 
   <!-- 编辑弹窗 -->
-  <view class="modal-mask" wx:if="{{showEditModal}}" bindtap="closeEditModal">
-    <view class="modal-box" catchtap="">
-      <view class="modal-header">
-        <text class="modal-title">编辑学生信息</text>
-        <text class="modal-close" bindtap="closeEditModal">✕</text>
-      </view>
-      <scroll-view class="modal-body" scroll-y>
+  <modal show="{{showEditModal}}" title="编辑学生信息" bindclose="closeEditModal" bindcancel="closeEditModal" bindconfirm="saveEdit">
+    <scroll-view class="modal-body" scroll-y>
         <view class="form-row">
           <view class="form-group half">
             <text class="form-label">姓名</text>
@@ -134,11 +129,6 @@
           <text class="form-label">经验</text>
           <input class="form-input" value="{{editForm.experience}}" data-field="experience" bindinput="onEditField" placeholder="如：学生会干部经历" />
         </view>
-      </scroll-view>
-      <view class="modal-footer">
-        <button class="btn-cancel" bindtap="closeEditModal">取消</button>
-        <button class="btn-confirm" bindtap="saveEdit">保存</button>
-      </view>
-    </view>
-  </view>
+    </scroll-view>
+  </modal>
 </view>

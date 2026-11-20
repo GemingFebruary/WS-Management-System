@@ -1,0 +1,11 @@
+/* components/modal/modal.wxss */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.modal-box { width: 84%; max-height: 76vh; background: var(--color-bg-white); border-radius: var(--radius-md); display: flex; flex-direction: column; overflow: hidden; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 28rpx 32rpx; border-bottom: 1rpx solid var(--color-border); }
+.modal-title { font-size: 32rpx; font-weight: 600; color: var(--color-text); }
+.modal-close { font-size: 36rpx; color: var(--color-text-hint); padding: 0 8rpx; }
+.modal-body { padding: 24rpx 32rpx; flex: 1; }
+.modal-footer { display: flex; border-top: 1rpx solid var(--color-border); }
+.modal-footer button { flex: 1; border-radius: 0; font-size: 30rpx; padding: 24rpx 0; }
+.btn-cancel { background: var(--color-bg); color: var(--color-text-secondary); }
+.btn-confirm { background: var(--color-primary); color: #fff; }

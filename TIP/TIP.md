@@ -225,4 +225,31 @@
 - 阶段 2：学生端匹配度可视化（进度条 / 维度分解 / 匹配依据）。
 - 需**重新部署** jobs / initDB / seedData 云函数后生效。
 
+---
+
+## 二十六、公共组件封装（2026-11-20）
+
+> 对应开题「封装弹窗、提示、空状态、表单、分页等公共组件」。
+
+### 组件清单（`components/`）
+
+| 组件 | 用途 | 关键属性 / 事件 |
+|------|------|----------------|
+| `empty-state` | 空状态占位 | `show` `icon` `text`，支持默认 slot |
+| `modal` | 弹窗 | `show` `title` `showCancel` `confirmText`，事件 `confirm`/`cancel`/`close` |
+| `toast` | 轻提示 | `show` `message` `type`(success/error/info) `duration`，事件 `close` |
+| `form-input` | 表单输入 | `label` `value` `type` `placeholder` `required` `error`，事件 `input` |
+| `pagination` | 分页 | `current` `pageSize` `total`，事件 `change`({pageNum}) |
+
+### 已接入
+
+- `empty-state`：jobList、myApplications、notices（替换原有重复空状态块）
+- `modal`：index 公告详情、studentManage 编辑弹窗
+- 页面通过 `usingComponents` 注册（路径 `/components/<name>/<name>`）
+
+### 待办
+
+- `form-input` / `pagination` / `toast` 已封装，可按需逐步替换各页面重复实现。
+- 后续可将 admin 其它编辑弹窗、表单页统一迁移到组件。
+
 *文档维护说明: 后续所有开发文档、开发日志均在 TIP/ 文件夹内生成/修改。*
