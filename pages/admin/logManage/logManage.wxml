@@ -1,0 +1,38 @@
+<!--pages/admin/logManage/logManage.wxml-->
+<view class="container">
+  <view class="backup-card card">
+    <view class="backup-title">数据备份</view>
+    <view class="backup-desc" wx:if="{{backupInfo}}">备份时间：{{backupInfo.backupTime}}；文件：{{backupInfo.fileID || '未上传'}}</view>
+    <view class="backup-desc" wx:else>将 users / jobs / applications / salary_records / notices 导出为 JSON 并上传云存储</view>
+    <button class="btn-primary backup-btn" bindtap="doBackup" disabled="{{backuping}}">{{backuping ? '备份中...' : '立即备份'}}</button>
+  </view>
+
+  <view class="filter-bar card">
+    <picker range="{{typeOptions}}" range-key="label" bindchange="onTypeChange" value="{{typeIndex}}">
+      <view class="filter-picker">{{typeOptions[typeIndex].label}} ▾</view>
+    </picker>
+    <input class="search-input" placeholder="搜索操作描述" value="{{keyword}}" bindinput="onKeyword" bindconfirm="doSearch" />
+    <button class="btn-search" bindtap="doSearch">搜索</button>
+  </view>
+
+  <view class="log-list">
+    <view class="log-card card" wx:for="{{list}}" wx:key="_id">
+      <view class="log-top">
+        <text class="log-type type-{{item.type}}">{{item.type}}</text>
+        <text class="log-time">{{item.createTime}}</text>
+      </view>
+      <view class="log-action">{{item.action}}</view>
+      <view class="log-meta">
+        <text class="log-user">操作人: {{item.userId}}</text>
+        <text class="log-details" wx:if="{{item.details}}">{{item.details}}</text>
+      </view>
+    </view>
+    <view class="empty-state" wx:if="{{list.length === 0 && !loading}}">
+      <image class="empty-icon" src="/images/icon/empty-box.png" mode="aspectFit"></image>
+      <text class="empty-text">暂无日志记录</text>
+    </view>
+  </view>
+
+  <pagination current="{{pageNum}}" pageSize="{{pageSize}}" total="{{total}}" bindchange="onPageChange" />
+</view>
+<toast id="globalToast" />

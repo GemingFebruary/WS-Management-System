@@ -277,6 +277,7 @@ async function reviewApplication(event) {
       data: updateData
     })
 
+    await addLog(userInfo.userId || userInfo.name, 'review', '审核申请', { applyId, reviewAction })
     return success(null, reviewAction === 'approve' ? '审核通过' : '已驳回')
   } catch (err) {
     console.error('reviewApplication error:', err)
@@ -318,6 +319,7 @@ async function batchReviewApplication(event) {
         console.error('批量审核单项失败:', id, err.message)
       }
     }
+    await addLog(userInfo.userId || userInfo.name, 'review', '批量审核申请', { count: applyIds.length, reviewAction })
     return success({ processed, total: applyIds.length }, '已处理 ' + processed + ' 条')
   } catch (err) {
     console.error('batchReviewApplication error:', err)
@@ -413,5 +415,18 @@ async function cancelApplication(event) {
   } catch (err) {
     console.error('cancelApplication error:', err)
     return error(500, '取消申请失败')
+  }
+}
+
+/**
+ * 写入系统日志（失败不阻断主流程）
+ */
+async function addLog(userId, type, action, details) {
+  try {
+    await db.collection('system_logs').add({
+      data: { type, userId, action, details: details || null, createTime: db.serverDate() }
+    })
+  } catch (e) {
+    console.warn('写日志失败:', e.message)
   }
 }

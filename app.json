@@ -20,7 +20,8 @@
     "pages/profile/editProfile/editProfile",
     "pages/admin/optionManage/optionManage",
     "pages/admin/jobEdit/jobEdit",
-    "pages/admin/studentEdit/studentEdit"
+    "pages/admin/studentEdit/studentEdit",
+    "pages/admin/logManage/logManage"
   ],
   "window": {
     "backgroundTextStyle": "light",

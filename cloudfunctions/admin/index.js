@@ -33,6 +33,10 @@ exports.main = async (event, context) => {
       return await deleteNotice(event)
     case 'getOptions':
       return await getOptions(event)
+    case 'getLogs':
+      return await getLogs(event)
+    case 'backupData':
+      return await backupData(event)
     case 'updateOptions':
       return await updateOptions(event)
     default:
@@ -74,6 +78,64 @@ async function updateOptions(event) {
     await db.collection('system_options').add({ data: { _id: 'study', ...data } })
   }
   return success(null, '选项已更新')
+}
+
+/**
+ * 查询系统日志（管理员）
+ */
+async function getLogs(event) {
+  const userInfo = await verifyUser(event)
+  if (!userInfo || !verifyAdmin(userInfo)) return unauthorized('需要管理员权限')
+  const { pageNum = 1, pageSize = 20, type = '', keyword = '' } = event
+  const size = Math.min(Math.max(parseInt(pageSize) || 20, 1), 50)
+  const page = Math.max(parseInt(pageNum) || 1, 1)
+  let where = {}
+  if (type) where.type = type
+  if (keyword) where.action = db.RegExp({ regexp: escapeRegExp(keyword), options: 'i' })
+  try {
+    const count = await db.collection('system_logs').where(where).count()
+    const res = await db.collection('system_logs').where(where)
+      .orderBy('createTime', 'desc').skip((page - 1) * size).limit(size).get()
+    return success({ total: count.total, list: res.data })
+  } catch (err) {
+    console.error('getLogs error:', err)
+    return error(500, '查询日志失败')
+  }
+}
+
+/**
+ * 数据备份（管理员）：导出各集合数据到云存储
+ */
+async function backupData(event) {
+  const userInfo = await verifyUser(event)
+  if (!userInfo || !verifyAdmin(userInfo)) return unauthorized('需要管理员权限')
+  const collections = ['users', 'jobs', 'applications', 'salary_records', 'notices']
+  const now = new Date()
+  const pad = (n) => String(n).padStart(2, '0')
+  const stamp = now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate()) + '-' + pad(now.getHours()) + pad(now.getMinutes())
+  try {
+    const data = {}
+    const summary = {}
+    for (const c of collections) {
+      const r = await db.collection(c).field({ password: false, openid: false }).limit(1000).get()
+      data[c] = r.data
+      summary[c] = r.data.length
+    }
+    let fileID = ''
+    try {
+      const up = await cloud.uploadFile({
+        cloudPath: 'backups/backup-' + stamp + '.json',
+        fileContent: Buffer.from(JSON.stringify({ backupTime: now.toISOString(), collections: data }))
+      })
+      fileID = up.fileID || ''
+    } catch (upErr) {
+      console.warn('备份上传云存储失败:', upErr.message)
+    }
+    return success({ fileID, summary, backupTime: now.toISOString() }, '备份已生成')
+  } catch (err) {
+    console.error('backupData error:', err)
+    return error(500, '备份失败')
+  }
 }
 
 /**
@@ -233,6 +295,7 @@ async function updateStudent(event) {
         data: updateData
       })
 
+    await addLog(userInfo.userId || 'admin', 'student', '更新学生信息', { userId, fields: Object.keys(updateData) })
     return success(null, '更新成功')
   } catch (err) {
     console.error('updateStudent error:', err)
@@ -385,5 +448,18 @@ async function deleteNotice(event) {
   } catch (err) {
     console.error('deleteNotice error:', err)
     return error(500, '删除公告失败')
+  }
+}
+
+/**
+ * 写入系统日志（失败不阻断主流程）
+ */
+async function addLog(userId, type, action, details) {
+  try {
+    await db.collection('system_logs').add({
+      data: { type, userId, action, details: details || null, createTime: db.serverDate() }
+    })
+  } catch (e) {
+    console.warn('写日志失败:', e.message)
   }
 }

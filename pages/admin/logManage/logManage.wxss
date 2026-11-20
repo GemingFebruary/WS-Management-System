@@ -1,0 +1,12 @@
+/* pages/admin/logManage/logManage.wxss */
+.filter-bar { display: flex; align-items: center; padding: 16rpx 24rpx; }
+.filter-picker { padding: 12rpx 24rpx; background: var(--color-bg); border-radius: var(--radius-sm); font-size: 26rpx; margin-right: 16rpx; }
+.search-input { flex: 1; height: 64rpx; line-height: 64rpx; padding: 0 20rpx; background: var(--color-bg); border-radius: var(--radius-sm); font-size: 26rpx; margin-right: 16rpx; }
+.btn-search { background: var(--color-primary); color: #fff; font-size: 26rpx; padding: 0 24rpx; height: 64rpx; line-height: 64rpx; border-radius: var(--radius-sm); }
+.log-card { padding: 24rpx; margin-bottom: 16rpx; }
+.log-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10rpx; }
+.log-type { font-size: 24rpx; padding: 4rpx 16rpx; border-radius: 16rpx; background: var(--color-primary-light); color: var(--color-primary-dark); }
+.log-time { font-size: 22rpx; color: var(--color-text-hint); }
+.log-action { font-size: 28rpx; color: var(--color-text); margin-bottom: 8rpx; }
+.log-meta { font-size: 22rpx; color: var(--color-text-hint); }
+.log-user { margin-right: 20rpx; }

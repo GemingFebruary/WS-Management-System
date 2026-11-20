@@ -294,6 +294,7 @@ async function createJob(event) {
       }
     })
 
+    await addLog(userInfo.userId || 'admin', 'job', '发布岗位', { jobName, jobCategory })
     return success({
       jobId: result._id
     }, '岗位发布成功')
@@ -363,6 +364,7 @@ async function updateJob(event) {
       data: updateData
     })
 
+    await addLog(userInfo.userId || 'admin', 'job', '更新岗位', { jobId })
     return success(null, '岗位更新成功')
   } catch (err) {
     console.error('updateJob error:', err)
@@ -402,6 +404,7 @@ async function deleteJob(event) {
 
     await db.collection('jobs').doc(docId).remove()
 
+    await addLog(userInfo.userId || 'admin', 'job', '删除岗位', { jobId })
     return success(null, '岗位删除成功')
   } catch (err) {
     console.error('deleteJob error:', err)
@@ -735,4 +738,17 @@ function hasCourseConflict(courses, workTime) {
   const dayClash = w.days.some(d => cDays.includes(d))
   const periodClash = w.periods.some(p => cPeriods.includes(p))
   return dayClash && periodClash
+}
+
+/**
+ * 写入系统日志（失败不阻断主流程）
+ */
+async function addLog(userId, type, action, details) {
+  try {
+    await db.collection('system_logs').add({
+      data: { type, userId, action, details: details || null, createTime: db.serverDate() }
+    })
+  } catch (e) {
+    console.warn('写日志失败:', e.message)
+  }
 }

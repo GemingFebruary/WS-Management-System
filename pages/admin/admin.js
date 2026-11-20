@@ -108,6 +108,16 @@ Page({
     util.showToast('系统设置功能即将上线', 'info')
   },
 
+  // 操作日志
+  logManage() {
+    wx.navigateTo({ url: '/pages/admin/logManage/logManage' })
+  },
+
+  // 数据备份
+  dataBackup() {
+    wx.navigateTo({ url: '/pages/admin/logManage/logManage?backup=1' })
+  },
+
   // 选项库管理
   optionManage() {
     wx.navigateTo({ url: '/pages/admin/optionManage/optionManage' })

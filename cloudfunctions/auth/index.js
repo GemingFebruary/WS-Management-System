@@ -134,6 +134,7 @@ async function login(event) {
       familyDesc: user.familyDesc
     }
 
+    await addLog(userInfo.userId || account, 'login', '用户登录', { account })
     return success({
       token,
       userInfo
@@ -357,5 +358,18 @@ async function updateProfile(event) {
   } catch (err) {
     console.error('updateProfile error:', err)
     return error(500, '更新失败')
+  }
+}
+
+/**
+ * 写入系统日志（失败不阻断主流程）
+ */
+async function addLog(userId, type, action, details) {
+  try {
+    await db.collection('system_logs').add({
+      data: { type, userId, action, details: details || null, createTime: db.serverDate() }
+    })
+  } catch (e) {
+    console.warn('写日志失败:', e.message)
   }
 }
